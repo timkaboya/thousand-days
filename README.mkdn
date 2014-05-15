@@ -2,4 +2,4 @@ RapidSMS: 1000 Days
 ===================
 Reusable Components Technical Documentation
 -------------------------------------------
-For now, dear reader, check <a href="README.html">README.html</a>.
+For now, dear reader, check <a href="README.html">README.html</a>. After all, it is *technical* documentation, yeah? Go read the HTML, O Programmer! :-p
