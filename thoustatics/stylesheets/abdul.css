@@ -1,0 +1,88 @@
+@import url("http://fonts.googleapis.com/css?family=Bitter:400,700,400italic|Open+Sans:400italic,800italic,400,800&subset=latin,latin-ext");
+body {
+  font-family: "Bitter";
+  background: fixed center no-repeat url("/static/images/preg.jpg"); }
+  body h1, body h2, body h3, body h4, body h5, body h6, body nav, body thead {
+    font-family: "Open Sans";
+    font-weight: 800;
+    font-variant: small-caps;
+    color: #402619;
+    padding: 0.125em;
+    text-align: center;
+    padding-right: 3em; }
+  body table {
+    font-family: inherit;
+    width: 80%;
+    margin-left: 10%; }
+    body table thead tr th {
+      font-family: "Open Sans"; }
+    body table tbody tr {
+      border: solid 1px #6aa0c2; }
+      body table tbody tr td {
+        text-align: center; }
+  body nav {
+    box-shadow: 0 0 0.5em #6aa0c2;
+    width: 50%;
+    margin-left: 25%;
+    margin-top: 0em;
+    margin-bottom: 1em;
+    border-radius: 1em 1em 1em 1em; }
+  body a {
+    color: #6aa0c2; }
+    body a:visited {
+      color: #9c5c3d; }
+  body textarea, body input, body legend {
+    font-family: "Open Sans";
+    font-weight: 400; }
+  body #main {
+    background: rgba(255, 255, 255, 0.8); }
+    body #main .header {
+      text-shadow: 0.125em 0.125em 0.125em #9c5c3d; }
+    body #main .stuff {
+      width: 75%;
+      margin-left: 12.5%; }
+      body #main .stuff .errorbox {
+        font-size: 60%;
+        width: 40%;
+        margin-left: 30%;
+        background: white;
+        box-shadow: 0.5em 0.5em 0.25em rgba(0, 0, 0, 0.5);
+        padding: 1em; }
+      body #main .stuff form {
+        padding: 2em; }
+        body #main .stuff form input[type="text"], body #main .stuff form textarea {
+          padding: 0.25em;
+          padding-left: 1em;
+          width: 75%;
+          margin-left: 12.5%;
+          border-radius: 1em 1em 1em 1em;
+          font-weight: bold;
+          display: block;
+          font-size: 75%; }
+        body #main .stuff form textarea {
+          height: 7em; }
+        body #main .stuff form .buttons {
+          text-align: center;
+          font-family: "Open Sans"; }
+          body #main .stuff form .buttons input {
+            font-family: "Open Sans";
+            font-weight: 800;
+            font-size: 50% !important; }
+    body #main ul {
+      margin: 0px;
+      padding: 0px;
+      text-align: center;
+      list-style: none; }
+      body #main ul li {
+        display: inline;
+        margin-left: 0.5em;
+        margin-right: 0.5em; }
+        body #main ul li a {
+          text-decoration: none; }
+          body #main ul li a:hover {
+            text-decoration: underline;
+            color: #402619; }
+  body #footer {
+    font-size: x-small;
+    text-align: right;
+    color: white; }

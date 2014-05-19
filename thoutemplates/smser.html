@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Abdul Bari Sahib’s Awesome SMS Testing Interface</title>
+    <link rel="stylesheet" href="/static/stylesheets/abdul.css" type="text/css" />
+  </head>
+  <body>
+    <div id="main">
+      <h1 class="header">SMS Interface</h1>
+      <nav>
+        <ul>
+          <li><a href="/">SMS</a></li>
+          <li><a href="/history">History</a></li>
+          <li><a href="/data">Data</a></li>
+        </ul>
+      </nav>
+      <div class="stuff">
+        {%  if messages  %}
+          <div class="errorbox">
+            <div>{{ flash.head  }}</div>
+            <ol>
+            {%  for msg in messages %}
+              <li>{{  msg  }}</li>  
+            {%  endfor  %}
+            </ol>
+          </div>
+        {%  endif %}
+        <form action="/sendsms" method="POST">
+          {%  csrf_token  %}
+          <input name="phone" placeholder="Your Number" type="text" size="10" />
+          <textarea name="msg" placeholder="Your report message:"></textarea>
+          <div class="buttons">
+            <input value="Send" type="submit" />
+          </div>
+        </form>
+        <table>
+          <thead>
+            <tr>
+              <th>By</th>
+              <th>Message</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%  for msg in msgs %}
+              <tr>
+                <td>{{  msg.sender  }}</td>
+                <td>{{  msg.message  }}</td>
+                <td>{{  msg.when  }}</td>
+              </tr>
+            {%  endfor  %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div id="footer">Abdul Bari Sahib’s Awesome SMS Testing Interface<br />&copy; 2014, Pivot Access. All Rights Reserved.</div>
+  </body>
+</html>
