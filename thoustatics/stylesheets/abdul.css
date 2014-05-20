@@ -75,13 +75,20 @@ body {
       list-style: none; }
       body #main ul li {
         display: inline;
-        margin-left: 0.5em;
-        margin-right: 0.5em; }
+        margin-left: 0.125em;
+        margin-right: 0.125em;
+        padding-left: 0.5em;
+        padding-right: 0.5em; }
+        body #main ul li:hover {
+          background-color: #402619;
+          color: white;
+          border-radius: 0.125em 0.125em 0.125em 0.125em;
+          box-shadow: -2px -2px 2px #9c5c3d; }
         body #main ul li a {
           text-decoration: none; }
           body #main ul li a:hover {
             text-decoration: underline;
-            color: #402619; }
+            color: white; }
   body #footer {
     font-size: x-small;
     text-align: right;

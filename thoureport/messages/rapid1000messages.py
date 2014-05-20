@@ -174,8 +174,16 @@ class ThouMessage:
     return ((re.split(r'\s+', msg, 1)) + [''])[0:2]
 
   @staticmethod
+  def caseless_hash(hsh):
+    ans = {}
+    for k in hsh:
+      ans[k.lower()] = hsh[k]
+    return ans
+
+  @staticmethod
   def parse_report(msg, fh, hsh, **kwargs):
     pz  = ThouMessage.parse(msg)
+    nch = ThouMessage.caseless_hash(hsh)
     if pz.__class__ == UnknownMessage:
       ukh = lambda x: x
       try:
@@ -184,7 +192,7 @@ class ThouMessage:
         pass
       return ukh(pz)
     if not pz.errors:
-      return fh(hsh[pz.code](pz))
+      return fh(nch[pz.code.lower()](pz))
     erh = lambda x: x
     try:
       erh = kwargs['error_handler']
@@ -211,7 +219,7 @@ class ThouMessage:
         'RAR':  RedResultMessage,
         'NBC':  NBCMessage,
         'PNC':  PNCMessage,
-      }[code]
+      }[code.upper()]
     except KeyError:
       pass
     return klass.process(klass, code, rem)

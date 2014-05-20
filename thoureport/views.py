@@ -2,6 +2,7 @@ from django.contrib import messages as flashes
 from django.shortcuts import render, redirect
 from thoureport.messages.rapid1000messages import *
 from thoureport.reports.rapid1000reports import *
+from thoureport.models import *
 
 def smser(req):
   msgs  = StoredSMS.objects.all()

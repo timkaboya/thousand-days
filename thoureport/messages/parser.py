@@ -2,6 +2,7 @@
 
 from abc import ABCMeta, abstractmethod
 import re
+import psycopg2
 
 class ThouFieldError:
   def __init__(self, cpt):

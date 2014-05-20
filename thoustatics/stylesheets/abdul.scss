@@ -153,8 +153,18 @@ body
       li
       {
         display: inline;
-        margin-left: 0.5em;
-        margin-right: 0.5em;
+        margin-left: 0.125em;
+        margin-right: 0.125em;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+
+        &:hover
+        {
+          background-color: $col1;
+          color: $plainwhite;
+          border-radius: 0.125em 0.125em 0.125em 0.125em;
+          box-shadow: -2px -2px 2px $col2;
+        }
 
         a
         {
@@ -163,7 +173,7 @@ body
           &:hover
           {
             text-decoration: underline;
-            color: $col1;
+            color: $plainwhite;
           }
         }
       }
