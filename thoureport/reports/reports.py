@@ -77,16 +77,29 @@ class ThouReport:
       self.__class__.columned = True
 
   def save(self):
-    fds   = self.message.fields
-    # cols  = fds.keys()
     if not self.__class__.created:
       self.__ensure_table()
     if not self.__class__.columned:
       self.__ensure_columns()
-    # TODO. Escape with the engine, make coherent.
-    qry   = 'INSERT INTO %s (%s) VALUES (%s)' % (self.table_name(), ', '.join([col for col in cols]), ', '.join([fds[col].__class__.dbvalue(fds[col]) for col in cols]))
-    raise Exception, ('Not yet saving: ' + str(self.__creation_sql(self.message)))
-    raise Exception, ('Not yet saving: ' + qry)
+    fds       = self.message.fields
+    given     = sets.Set([('%s_%s' % (x, fds[x].working_value)) for x in fds if fds[x].several_fields])
+    tbl, cols = self.__creation_sql(self.message)
+    cpt       = []
+    vpt       = []
+    # TODO: given should be filled properly. Need to sleep.
+    raise Exception, given
+    for coln, _ in cols:
+      if coln in given:
+        cpt.append(coln)
+        vpt.append("'%s'" % (str(coln),))   # TODO: Mogrify properly.
+      # vpt.append(fds[coln].__class__.dbvalue(fds[coln]))  # TODO. To-do the below.
+    qry   = 'INSERT INTO %s (%s) VALUES (%s);' % (tbl, ', '.join(cpt), ', '.join(vpt)) 
+    raise Exception, qry
+    raise Exception, fds
+    curz  = THE_DATABASE.cursor()
+    curz.execute(qry)
+    curz.close()
+    return self
 
   @classmethod
   def load(self, msgtxt):

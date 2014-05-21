@@ -29,11 +29,11 @@ def sender(req):
 
   def is_fine(rept):
     rept.save()
-    return redirect('thoureport.views.smser', name='smser')
+    return redirect('/')
 
   return ThouMessage.parse_report(req.POST['msg'], is_fine,
     {
-      'RED':RedReport
+      'RED':RedReport,
     },
     error_handler   = has_errors,
     unknown_handler = unknown

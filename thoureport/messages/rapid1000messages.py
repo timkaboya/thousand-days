@@ -4,6 +4,10 @@ from abc import ABCMeta, abstractmethod
 import re
 from thoureport.messages.parser import *
 
+def and_join(dem, what):
+  if len(dem) < 2: dem[0]
+  return ', and '.join([', '.join(dem[0:-1]), dem[-1]])
+
 class IDField(ThouField):
   @classmethod
   def is_legal(self, ans):
@@ -51,8 +55,12 @@ class SymptomCodeField(CodeField):
 
 class RedSymptomCodeField(SymptomCodeField):
   @classmethod
+  def invalid_error(self):
+    return 'Please check that you have the correct type of current symptom or symptoms in the appropriate place in your Red Alert Report. These can be %s. If you have more than 1 they must be separated by a space.' % (and_join(self.expectations(), ', '))
+
+  @classmethod
   def expectations(self):
-    return ['AF', 'CH', 'CI', 'CM', 'IB', 'DB', 'DI'] # TODO: Fix this later.
+    return ['AP', 'CO', 'HE', 'LA', 'MC', 'PA', 'PS', 'SC', 'SL', 'UN']
 
 class LocationField(CodeField):
   @classmethod

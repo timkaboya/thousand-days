@@ -13,9 +13,11 @@ class ThouFieldError:
 # DB default.
 # The value.
 # The value, DB-ready.
+# Insist on all that is expected (e.g., location on RED).
 class ThouField:
   __metaclass__   = ABCMeta
 
+  # TODO: fetch and list all the indicator fields.
   @staticmethod
   def pull(self, cod, txt, many = False):
     got = []
@@ -41,7 +43,7 @@ class ThouField:
       else:
         # raise ThouFieldError("Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
         # err.append("Invalid code (expected %s; not %s)" % (cod, ', '.join(self.expectations() or ['nothing']), ans))
-        err.append("Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
+        err.append(self.invalid_error() or "Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
       if not many: break
     return (self(got, many), err, etc)
 
@@ -49,6 +51,11 @@ class ThouField:
   @abstractmethod
   def is_legal(self, fld):
     pass
+
+  @classmethod
+  @abstractmethod
+  def invalid_error(self):
+    return 'Please check that you have the correct data. Expecting: %s.' % (', '.join(self.expectations()),)
 
   @classmethod
   @abstractmethod
