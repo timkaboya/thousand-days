@@ -4,7 +4,6 @@ from thoureport.messages.parser import *
 from thousand.settings import DATABASES
 import psycopg2
 import re
-import sets
 
 __DEFAULTS    = DATABASES['default']
 THE_DATABASE  = psycopg2.connect(database = __DEFAULTS['NAME'],
@@ -64,7 +63,7 @@ class ThouReport:
       dbn, cols = self.__creation_sql(self.message)
       curz  = THE_DATABASE.cursor()
       curz.execute('SELECT column_name FROM information_schema.columns WHERE table_name = (%s)', [dbn])
-      noms  = sets.Set()
+      noms  = set()
       while True:
         row = curz.fetchone()
         if not row: break
@@ -82,7 +81,7 @@ class ThouReport:
     if not self.__class__.columned:
       self.__ensure_columns()
     fds       = self.message.fields
-    given     = sets.Set([('%s_%s' % (x, fds[x].working_value)) for x in fds if fds[x].several_fields])
+    given     = set([('%s_%s' % (x, fds[x].working_value)) for x in fds if fds[x].several_fields])
     tbl, cols = self.__creation_sql(self.message)
     cpt       = []
     vpt       = []
