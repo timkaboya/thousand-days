@@ -1,0 +1,21 @@
+{%  extends "superior.html" %}
+{%  block trunk %}
+        <table>
+          <thead>
+            <tr>
+              <th>By</th>
+              <th>Message</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>
+            {%  for msg in msgs %}
+              <tr>
+                <td>{{  msg.sender  }}</td>
+                <td>{{  msg.message  }}</td>
+                <td>{{  msg.when  }}</td>
+              </tr>
+            {%  endfor  %}
+          </tbody>
+        </table>
+{%  endblock  %}

@@ -4,10 +4,6 @@ from abc import ABCMeta, abstractmethod
 import re
 import psycopg2
 
-class ThouFieldError:
-  def __init__(self, cpt):
-    self.complaint  = cpt
-
 # TODO:
 # DB type.
 # DB default.
@@ -17,14 +13,17 @@ class ThouFieldError:
 class ThouField:
   __metaclass__   = ABCMeta
 
-  # TODO: fetch and list all the indicator fields.
   @staticmethod
   def pull(self, cod, txt, many = False):
     got = []
     etc = txt
     err = []
     while True:
-      if not etc: break
+      if not etc:
+        if not got:
+          err.append(('%s_missing_fields' % (cod,)).lower())
+        break
+      prv   = etc
       stuff = re.split(r'\s+', etc, 1)
       if len(stuff) < 2:
         stuff.append('')
@@ -41,9 +40,12 @@ class ThouField:
         else:
           got.append(ans)
       else:
-        # raise ThouFieldError("Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
-        # err.append("Invalid code (expected %s; not %s)" % (cod, ', '.join(self.expectations() or ['nothing']), ans))
-        err.append(self.invalid_error() or "Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
+        if many and got:
+          etc = prv
+        else:
+          err.append(('%s_invalid_code_field' % (cod,)).lower())
+        break
+        # err.append("Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
       if not many: break
     return (self(got, many), err, etc)
 
@@ -51,11 +53,6 @@ class ThouField:
   @abstractmethod
   def is_legal(self, fld):
     pass
-
-  @classmethod
-  @abstractmethod
-  def invalid_error(self):
-    return 'Please check that you have the correct data. Expecting: %s.' % (', '.join(self.expectations()),)
 
   @classmethod
   @abstractmethod
@@ -82,14 +79,15 @@ class ThouField:
 
   @classmethod
   def dbtype(self, it = None):
-    return 'TEXT'    # TODO.
+    return 'TEXT'    # TODO. Force them to adapt this per ThouField?
 
   @classmethod
-  def dbvalue(self, it):
-    return 'self.fixed_for_db(it.working_value)'    # TODO.
+  def dbvalue(self, it, kasa):
+    return kasa.mogrify('%s', it)
 
   @classmethod
   def default_dbvalue(self):
+    # TODO: Find the callers and re-educate them.
     # return self.fixed_for_db(self.default_value)
     return self.fixed_for_db(None)
 

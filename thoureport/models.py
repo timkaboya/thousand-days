@@ -3,18 +3,25 @@
 from django.db import models
 from abc import ABCMeta, abstractmethod
 
-class StoredErrorMessage(models.Model):
+class StoredResponse(models.Model):
   text  = models.TextField()
+  code  = models.TextField()
+
+  @staticmethod
+  def fetch_tranform(cod, msg):
+    ans = StoredResponse.fetch(cod)
+    # TODO: Apply transformations, from the same descriptor that shows them to the admin.
+    return ans
 
   @staticmethod
   def fetch(cod):
-    msg = StoredErrorMessage.objects.filter(code = cod)
-    if msg:
+    msg = StoredResponse.objects.filter(code = cod)
+    if msg.count():
       return msg[0].text
     else:
-      news  = StoredErrorMessage(text = 'Error ' + cod, code = cod)
+      news  = StoredResponse(text = 'Error code: ' + cod, code = cod)
       news.save()
-      return StoredErrorMessage.fetch(code)
+      return StoredResponse.fetch(cod)
 
 class StoredSMS(models.Model):
   message = models.TextField()

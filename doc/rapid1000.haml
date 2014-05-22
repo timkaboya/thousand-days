@@ -1,0 +1,41 @@
+!!!
+- tit = 'RapidSMS 1000 Days Technical Documentation'
+- ver = '1.0'
+%html
+  %head
+    %title
+      = tit
+      = surround '(', ')' do
+        = precede 'v' do
+          = ver
+    %link{rel: 'stylesheet', href: 'rapid1000.css', type: 'text/css'}/
+  %body
+    #main
+      .cover
+        %h1=  tit
+      .toc
+        %h2 Table of Contents
+        %table
+          %tbody
+          - @docs.each_with_index do |doc, ix|
+            %tr
+              %td.lk
+                %a{href: "#doc_#{doc.id}"}
+                  = ix
+              %td
+                %a{href: "#doc_#{doc.id}"}
+                  = doc.name
+        .toctime
+          = Time.now
+      .docs
+        - @docs.each do |doc|
+          .doc
+            %h1{id: "doc_#{doc.id}"}
+              = doc.name
+            .info
+              = doc.to_html
+    #footer
+      Version:
+      = ver
+      %br/
+      &copy; 2014, Pivot Access. All Rights Reserved.

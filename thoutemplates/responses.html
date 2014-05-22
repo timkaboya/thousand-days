@@ -1,0 +1,13 @@
+{%  extends "superior.html" %}
+{%  block trunk %}
+{%  for msg in msgs %}
+<form method="POST" action="/modresp/{{  msg.code  }}">
+  <fieldset>
+    <legend>For code: <strong>{{  msg.code  }}</strong></legend>
+    {%  csrf_token  %}
+    <textarea name="msg">{{ msg.text  }}</textarea>
+  </fieldset>
+  <input type="submit" value="Modify {{  msg.code  }}" />
+</form>
+{%  endfor  %}
+{%  endblock  %}

@@ -1,0 +1,69 @@
+body {
+  font-family: "Liberation Serif";
+  color: #402619;
+  font-size: 15pt; }
+  body a {
+    color: #6aa0c2; }
+  body h1, body h2, body h3, body h4, body h5, body h6 {
+    font-family: "Liberation Sans";
+    text-align: center;
+    color: #9c5c3d;
+    font-variant: small-caps;
+    font-variant-settings: "diag", "dlig"; }
+    body h1:before, body h2:before, body h3:before, body h4:before, body h5:before, body h6:before {
+      content: " ";
+      background: #6aa0c2; }
+  body h1 {
+    page-break-before: always; }
+  body .cover {
+    page-break-after: always;
+    border: solid 1px rgba(0, 0, 0, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 20pt;
+    page: coverpage; }
+  body .toc {
+    width: 80%;
+    margin-left: 10%;
+    font-family: "Liberation Sans";
+    font-size: 60%;
+    page-break-after: always; }
+    body .toc h1, body .toc h2, body .toc h3, body .toc h4, body .toc h5, body .toc h6 {
+      text-align: left;
+      font-variant: normal; }
+    body .toc a {
+      text-decoration: none; }
+    body .toc .lk {
+      padding-right: 2em;
+      text-align: left; }
+      body .toc .lk a {
+        content: target-counter(attr(href), page);
+        color: #402619;
+        font-family: #6aa0c2; }
+    body .toc .toctime {
+      font-size: 70%;
+      font-family: "Liberation Mono";
+      vertical-align: bottom;
+      text-align: center;
+      margin-top: 5em; }
+  body #main .docs {
+    font-size: 10pt;
+    counter-reset: page 1;
+    page: docpage; }
+    body #main .docs .doc .info {
+      column-count: 2; }
+  body #footer {
+    page-break-before: always;
+    font-size: 7pt;
+    text-align: center;
+    font-family: "Liberation Mono"; }
+
+@page docpage {
+  font-family: "Liberation Mono";
+  font-size: 50%;
+  color: #9c5c3d;
+  @bottom-right-corner {
+    content: counter(page); } }
+
+@page coverpage {
+  background: url("rapid1000.jpg") no-repeat center fixed;
+  background-image-resolution: 80dpi; }

@@ -12,8 +12,6 @@ THE_DATABASE  = psycopg2.connect(database = __DEFAULTS['NAME'],
                                      host = __DEFAULTS['HOST'])
 
 # TODO:
-# IDs for records.
-# Save the report.
 # Load the report(s).
 # Find a report.
 class ThouReport:
@@ -38,18 +36,18 @@ class ThouReport:
       fldc  = fld.__class__
       if fld.several_fields:
         for exp in fld.expectations():
-          subans  = (('%s_%s' % (col, exp.lower()), '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue())))
+          subans  = (('%s_%s' % (col, exp.lower()), '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue()), fldc))
           cols.append(subans)
       else:
-        cols.append((col, '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue())))
+        cols.append((col, '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue()), fldc))
     return (self.table_name(), cols)
 
   def __init__(self, msg):
     self.message  = msg
 
   def __ensure_table(self):
+    dbn, _ = self.__creation_sql(self.message)
     if not self.__class__.created:
-      dbn, _ = self.__creation_sql(self.message)
       curz  = THE_DATABASE.cursor()
       curz.execute('SELECT TRUE FROM information_schema.tables WHERE table_name = (%s)', [dbn])
       row = curz.fetchone()
@@ -57,10 +55,11 @@ class ThouReport:
         curz.execute('CREATE TABLE %s ();' % (dbn,))
       curz.close()
       self.__class__.created = True
+    return dbn
 
   def __ensure_columns(self):
+    dbn, cols = self.__creation_sql(self.message)
     if not self.__class__.columned:
-      dbn, cols = self.__creation_sql(self.message)
       curz  = THE_DATABASE.cursor()
       curz.execute('SELECT column_name FROM information_schema.columns WHERE table_name = (%s)', [dbn])
       noms  = set()
@@ -68,34 +67,40 @@ class ThouReport:
         row = curz.fetchone()
         if not row: break
         noms.add(row[0])
-      for coln, coletc in cols:
-        # n, _  = re.split(r'\s+', col, 1)
+      for coln, coletc, cc in cols:
         if not (coln in noms):
-          curz.execute('ALTER TABLE %s ADD COLUMN %s %s;' % (dbn, coln, coletc))
+          curz.execute('ALTER TABLE %s ADD COLUMN %s %s; /*%s*/' % (dbn, coln, coletc, str(cc)))
       curz.close()
       self.__class__.columned = True
+    return cols
+
+  def __insertables(self):
+    fds = self.message.fields
+    cvs = {}
+    for fx in fds:
+      curfd = fds[fx]
+      if curfd.several_fields:
+        for vl in curfd.working_value:
+          cvs[('%s_%s' % (fx, vl)).lower()] = vl
+      else:
+        try:
+          cvs[fx] = curfd.working_value[0]
+        except IndexError:
+          raise Exception, ('No value supplied for column \'%s\' (%s)' % (fx, str(curfd)))
+    return cvs
 
   def save(self):
-    if not self.__class__.created:
-      self.__ensure_table()
-    if not self.__class__.columned:
-      self.__ensure_columns()
-    fds       = self.message.fields
-    given     = set([('%s_%s' % (x, fds[x].working_value)) for x in fds if fds[x].several_fields])
-    tbl, cols = self.__creation_sql(self.message)
-    cpt       = []
-    vpt       = []
-    # TODO: given should be filled properly. Need to sleep.
-    raise Exception, given
-    for coln, _ in cols:
-      if coln in given:
-        cpt.append(coln)
-        vpt.append("'%s'" % (str(coln),))   # TODO: Mogrify properly.
-      # vpt.append(fds[coln].__class__.dbvalue(fds[coln]))  # TODO. To-do the below.
-    qry   = 'INSERT INTO %s (%s) VALUES (%s);' % (tbl, ', '.join(cpt), ', '.join(vpt)) 
-    raise Exception, qry
-    raise Exception, fds
+    tbl   = self.__ensure_table()
+    cols  = self.__ensure_columns()
+    cvs   = self.__insertables()
     curz  = THE_DATABASE.cursor()
+    cpt   = []
+    vpt   = []
+    for coln, _, escer in cols:
+      if coln in cvs:
+        cpt.append(coln)
+        vpt.append(escer.dbvalue(cvs[coln], curz))
+    qry   = 'INSERT INTO %s (%s) VALUES (%s);' % (tbl, ', '.join(cpt), ', '.join(vpt)) 
     curz.execute(qry)
     curz.close()
     return self

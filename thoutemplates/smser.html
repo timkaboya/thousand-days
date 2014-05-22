@@ -1,21 +1,5 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Abdul Bari Sahib’s Awesome SMS Testing Interface</title>
-    <link rel="stylesheet" href="/static/stylesheets/abdul.css" type="text/css" />
-  </head>
-  <body>
-    <div id="main">
-      <h1 class="header">SMS Interface</h1>
-      <nav>
-        <ul>
-          <li><a href="/">SMS</a></li>
-          <li><a href="/history">History</a></li>
-          <li><a href="/data">Data</a></li>
-          <li><a href="/responses">Responses</a></li>
-        </ul>
-      </nav>
-      <div class="stuff">
+{%  extends "superior.html" %}
+{%  block trunk %}
         {%  if messages  %}
           <div class="errorbox">
             <div>{{ flash.head  }}</div>
@@ -52,8 +36,4 @@
             {%  endfor  %}
           </tbody>
         </table>
-      </div>
-    </div>
-    <div id="footer">Abdul Bari Sahib’s Awesome SMS Testing Interface<br />&copy; 2014, Pivot Access. All Rights Reserved.</div>
-  </body>
-</html>
+{%  endblock  %}

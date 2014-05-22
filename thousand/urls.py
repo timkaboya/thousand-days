@@ -6,7 +6,12 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^$', 'thoureport.views.smser', name='smser'),
     url(r'^sendsms$', 'thoureport.views.sender', name='sender'),
-    url(r'^history$', 'thoureport.views.history', name='history'),
+
+    url(r'^responses$', 'thoureport.views.responses', name='responses'),
+    url(r'^modresp/(.+)$', 'thoureport.views.resp_mod', name='resp_mod'),
+
+    url(r'^messages$', 'thoureport.views.messages', name='messages'),
+    url(r'^reports$', 'thoureport.views.reports', name='reports'),
     # Examples:
     # url(r'^$', 'thousand.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),

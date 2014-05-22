@@ -1,0 +1,137 @@
+$f1: "Liberation Serif";
+$f2: "Liberation Sans";
+$f3: "Liberation Mono";
+
+$plainwhite: rgb(255, 255, 255);
+$seethru: rgba(255, 255, 255, 0.8);
+$shadow: rgba(0, 0, 0, 0.5);
+$col1: rgb(64, 38, 25);
+$col2: lighten($col1, 25%);
+$col3: rgb(106, 160, 194);
+
+body
+{
+  font-family: $f1;
+  color: $col1;
+  font-size: 15pt;
+
+  a
+  {
+    color: $col3;
+  }
+
+  h1, h2, h3, h4, h5, h6
+  {
+    font-family: $f2;
+    text-align: center;
+    color: $col2;
+    font-variant: small-caps;
+    font-variant-settings: "diag", "dlig";
+
+    &:before
+    {
+      content: " ";
+      background: $col3;
+    }
+  }
+
+  h1
+  {
+    page-break-before: always;
+  }
+
+  .cover
+  {
+    page-break-after: always;
+    border: solid 1px $shadow;
+    color: $seethru;
+    font-size: 20pt;
+    page: coverpage;
+  }
+
+  .toc
+  {
+    width: 80%;
+    margin-left: 10%;
+    font-family: $f2;
+    font-size: 60%;
+    page-break-after: always;
+
+    h1, h2, h3, h4, h5, h6
+    {
+      text-align: left;
+      font-variant: normal;
+    }
+
+    a
+    {
+      text-decoration: none;
+    }
+
+    .lk
+    {
+      padding-right: 2em;
+      text-align: left;
+
+      a
+      {
+        content: target-counter(attr(href), page);
+        color: $col1;
+        font-family: $col3;
+      }
+    }
+
+    .toctime
+    {
+      font-size: 70%;
+      font-family: $f3;
+      vertical-align: bottom;
+      text-align: center;
+      margin-top: 5em;
+    }
+  }
+
+  #main
+  {
+    .docs
+    {
+      font-size: 10pt;
+      counter-reset: page 1;
+      page: docpage;
+
+      .doc
+      {
+        .info
+        {
+          column-count: 2;
+        }
+      }
+    }
+  }
+  
+  #footer
+  {
+    page-break-before: always;
+    font-size: 7pt;
+    text-align: center;
+    font-family: $f3;
+  }
+}
+
+@page docpage
+{
+  font-family: $f3;
+  font-size: 50%;
+  color: $col2;
+
+  @bottom-right-corner
+  {
+    content: counter(page);
+  }
+}
+
+@page coverpage
+{
+  background: url('rapid1000.jpg') no-repeat center fixed;
+  background-image-resolution: 80dpi;
+}

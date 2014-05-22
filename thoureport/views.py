@@ -8,9 +8,27 @@ def smser(req):
   msgs  = StoredSMS.objects.all()
   return render(req, 'smser.html', {'msgs': msgs})
 
-def history(req):
+def reports(req):
+  reps  = []
+  return render(req, 'reports.html', {'reps': reps})
+
+def messages(req):
   msgs  = StoredSMS.objects.all()
-  return render(req, 'history.html', {'msgs': msgs})
+  return render(req, 'messages.html', {'msgs': msgs})
+
+def resp_mod(req, cod):
+  try:
+    msg       = StoredResponse.objects.get(code = cod)
+    msg.text  = req.POST['msg']
+    msg.save()
+  except Exception, e:
+    # TODO: Complain; but when would this happen?
+    pass
+  return redirect('/responses')
+
+def responses(req):
+  msgs  = StoredResponse.objects.all()
+  return render(req, 'responses.html', {'msgs': msgs})
 
 def sender(req):
   message               = req.POST['msg']
@@ -19,12 +37,15 @@ def sender(req):
   sm                    = StoredSMS(message = message, sender = req.POST['phone'])
   sm.save()
   def unknown(uk):
-    flashes.add_message(req, flashes.ERROR, 'Unknown code: ' + message)
+    flashes.add_message(req, flashes.ERROR, StoredResponse.fetch('unknown_message'))
     return redirect('/')
 
   def has_errors(msgobj):
     for er in msgobj.errors:
-      flashes.add_message(req, flashes.ERROR, er)
+      flashes.add_message(req,
+        flashes.ERROR,
+        StoredResponse.fetch(er)
+      )
     return redirect('/')
 
   def is_fine(rept):
