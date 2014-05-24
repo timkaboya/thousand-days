@@ -1,4 +1,19 @@
 {%  extends "superior.html" %}
 {%  block trunk %}
-A list of the reports.
+<ul class="repmenu">
+  {%  for ind in repset %}
+    <li>
+      <a href="/reports/{{  ind }}">{{  ind }}</a>
+    </li>
+  {%  endfor  %}
+</ul>
+{%  for rep in reps %}
+  {{  rep }}
+  <table>
+    <thead>
+      {%  for rc in rep.columns %}
+      {%  endfor  %}
+    </thead>
+  </table>
+{%  endfor  %}
 {%  endblock  %}

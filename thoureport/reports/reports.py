@@ -19,8 +19,8 @@ class ThouReport:
   columned  = False
 
   @classmethod
-  def create_table(self, mobj):
-    sql = self.__creation_sql(mobj)
+  def sql_description(self, mobj):
+    return self.__creation_sql(mobj)
 
   @classmethod
   def table_name(self):
@@ -29,6 +29,7 @@ class ThouReport:
   @classmethod
   def __creation_sql(self, mobj):
     fields      = mobj.fields
+    raise Exception, [x for x in fields]
     columns     = mobj.fields.keys()
     cols        = []
     for col in columns:

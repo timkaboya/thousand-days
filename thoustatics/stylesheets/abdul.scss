@@ -141,9 +141,34 @@ body
           }
         }
       }
+
+      ul.repmenu
+      {
+        background: $col1;
+        list-style: none;
+        margin: 0pt;
+        padding: 0pt;
+        margin-bottom: 2px;
+
+        li
+        {
+          background: $plainwhite;
+          color: $col2;
+          margin: 0pt;
+          padding: 0pt;
+          margin-right: 2px;
+          display: inline;
+
+          a
+          {
+            text-decoration: none;
+            color: inherit;
+          }
+        }
+      }
     }
 
-    ul
+    nav ul
     {
       margin: 0px;
       padding: 0px;

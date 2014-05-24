@@ -4,12 +4,6 @@ from abc import ABCMeta, abstractmethod
 import re
 import psycopg2
 
-# TODO:
-# DB type.
-# DB default.
-# The value.
-# The value, DB-ready.
-# Insist on all that is expected (e.g., location on RED).
 class ThouField:
   __metaclass__   = ABCMeta
 

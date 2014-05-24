@@ -68,25 +68,41 @@ body {
             font-family: "Open Sans";
             font-weight: 800;
             font-size: 50% !important; }
-    body #main ul {
+      body #main .stuff ul.repmenu {
+        background: #402619;
+        list-style: none;
+        margin: 0pt;
+        padding: 0pt;
+        margin-bottom: 2px; }
+        body #main .stuff ul.repmenu li {
+          background: white;
+          color: #9c5c3d;
+          margin: 0pt;
+          padding: 0pt;
+          margin-right: 2px;
+          display: inline; }
+          body #main .stuff ul.repmenu li a {
+            text-decoration: none;
+            color: inherit; }
+    body #main nav ul {
       margin: 0px;
       padding: 0px;
       text-align: center;
       list-style: none; }
-      body #main ul li {
+      body #main nav ul li {
         display: inline;
         margin-left: 0.125em;
         margin-right: 0.125em;
         padding-left: 0.5em;
         padding-right: 0.5em; }
-        body #main ul li:hover {
+        body #main nav ul li:hover {
           background-color: #402619;
           color: white;
           border-radius: 0.125em 0.125em 0.125em 0.125em;
           box-shadow: -2px -2px 2px #9c5c3d; }
-        body #main ul li a {
+        body #main nav ul li a {
           text-decoration: none; }
-          body #main ul li a:hover {
+          body #main nav ul li a:hover {
             text-decoration: underline;
             color: white; }
   body #footer {

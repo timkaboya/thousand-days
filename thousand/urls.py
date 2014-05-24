@@ -11,10 +11,7 @@ urlpatterns = patterns('',
     url(r'^modresp/(.+)$', 'thoureport.views.resp_mod', name='resp_mod'),
 
     url(r'^messages$', 'thoureport.views.messages', name='messages'),
-    url(r'^reports$', 'thoureport.views.reports', name='reports'),
-    # Examples:
-    # url(r'^$', 'thousand.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+    url(r'^reports(/\w+)?$', 'thoureport.views.reports', name='reports'),
 
     url(r'^admin/', include(admin.site.urls)),
 )

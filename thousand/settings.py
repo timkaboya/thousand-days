@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_jinja',
     'thoureport',
 )
 
@@ -89,3 +90,7 @@ STATIC_URL = '/static/'
 # TODO: Generalise when it is right to.
 TEMPLATE_DIRS = ('thoutemplates',)
 STATICFILES_DIRS = ('thoustatics',)
+TEMPLATE_LOADERS = (
+  'django_jinja.loaders.AppLoader',
+  'django_jinja.loaders.FileSystemLoader',
+)

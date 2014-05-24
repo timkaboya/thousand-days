@@ -213,21 +213,7 @@ class ThouMessage:
     code, rem = ThouMessage.pull_code(msg.strip())
     klass     = UnknownMessage
     try:
-      klass     = {
-        'PRE':  PregMessage,
-        'REF':  RefMessage,
-        'ANC':  ANCMessage,
-        'DEP':  DepMessage,
-        'RISK': RiskMessage,
-        'RED':  RedMessage,
-        'BIR':  BirMessage,
-        'CHI':  ChildMessage,
-        'DTH':  DeathMessage,
-        'RES':  ResultMessage,
-        'RAR':  RedResultMessage,
-        'NBC':  NBCMessage,
-        'PNC':  PNCMessage,
-      }[code.upper()]
+      klass     = MSG_ASSOC[code.upper()]
     except KeyError:
       pass
     return klass.process(klass, code, rem)
@@ -338,3 +324,20 @@ class PNCMessage(ThouMessage):
   fields  = [IDField, PNCField, DateField,
              (SymptomCodeField, True),
              InterventionField, MotherHealthStatusField]
+
+
+MSG_ASSOC = {
+  'PRE':  PregMessage,
+  'REF':  RefMessage,
+  'ANC':  ANCMessage,
+  'DEP':  DepMessage,
+  'RISK': RiskMessage,
+  'RED':  RedMessage,
+  'BIR':  BirMessage,
+  'CHI':  ChildMessage,
+  'DTH':  DeathMessage,
+  'RES':  ResultMessage,
+  'RAR':  RedResultMessage,
+  'NBC':  NBCMessage,
+  'PNC':  PNCMessage,
+}

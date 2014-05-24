@@ -2,15 +2,34 @@ from django.contrib import messages as flashes
 from django.shortcuts import render, redirect
 from thoureport.messages.rapid1000messages import *
 from thoureport.reports.rapid1000reports import *
+from thoureport.reports.reports import THE_DATABASE as db
 from thoureport.models import *
+
+REPORT_SET = {
+  'RED':  RedReport,
+}
+
+class TraversibleReport:
+  def __init__(self, repc):
+    self.repc = repc
+
+  def columns(self):
+    raise Exception, self.repc.create_table()
 
 def smser(req):
   msgs  = StoredSMS.objects.all()
   return render(req, 'smser.html', {'msgs': msgs})
 
-def reports(req):
+def reports(req, rcode = None):
   reps  = []
-  return render(req, 'reports.html', {'reps': reps})
+  if rcode:
+    try:
+      reps  = [(REPORT_SET[rcode[1:]], MSG_ASSOC[rcode[1:]])]
+    except Exception, e:
+      pass
+  raise Exception, reps[0][1].fields
+  raise Exception, reps[0][0].sql_description(reps[0][1])
+  return render(req, 'reports.html', {'reps': reps, 'repset': REPORT_SET})
 
 def messages(req):
   msgs  = StoredSMS.objects.all()
@@ -22,8 +41,7 @@ def resp_mod(req, cod):
     msg.text  = req.POST['msg']
     msg.save()
   except Exception, e:
-    # TODO: Complain; but when would this happen?
-    pass
+    StoredResponse.objects.create(code = req.POST['code'], text = req.POST['msg'])
   return redirect('/responses')
 
 def responses(req):
@@ -52,10 +70,4 @@ def sender(req):
     rept.save()
     return redirect('/')
 
-  return ThouMessage.parse_report(req.POST['msg'], is_fine,
-    {
-      'RED':RedReport,
-    },
-    error_handler   = has_errors,
-    unknown_handler = unknown
-  )
+  return ThouMessage.parse_report(req.POST['msg'], is_fine, REPORT_SET, error_handler   = has_errors, unknown_handler = unknown)
