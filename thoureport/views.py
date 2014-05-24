@@ -10,6 +10,28 @@ REPORT_SET = {
   'REV':  RevenceReport,
 }
 
+TRANSFORMATIONS = {
+  '[...]' : (
+    'Expected codes',
+    lambda x: and_join(x.expectations())
+  )
+}
+
+class TraversibleTX:
+  def __init__(self):
+    self.them = TRANSFORMATIONS.keys()
+    self.them.sort()
+
+  def fetch(self):
+    ans = []
+    for it in self.them:
+      ans.append({'code': it, 'descr': TRANSFORMATIONS[it][0]})
+    return ans
+
+def and_join(dem):
+  if len(dem) < 2: dem[0]
+  return ', and '.join([', '.join(dem[0:-1]), dem[-1]])
+
 class TraversibleReport:
   def __init__(self, repc, msgc):
     self.repc                 = repc
@@ -28,6 +50,11 @@ class TraversibleReport:
     curz.close()
     db.commit()
     return rs
+
+def error_messenger(dat, msgobj, fld):
+  def applicant(p, n):
+    return p.replace(n, TRANSFORMATIONS[n][1](dat))
+  return reduce(applicant, TRANSFORMATIONS.keys(), fld)
 
 def smser(req):
   msgs  = StoredSMS.objects.all()
@@ -60,7 +87,7 @@ def resp_mod(req, cod):
 
 def responses(req):
   msgs  = StoredResponse.objects.all()
-  return render(req, 'responses.html', {'msgs': msgs})
+  return render(req, 'responses.html', {'msgs': msgs, 'txes':TraversibleTX().fetch()})
 
 def sender(req):
   message               = req.POST['msg']
@@ -74,14 +101,19 @@ def sender(req):
 
   def has_errors(msgobj):
     for er in msgobj.errors:
-      flashes.add_message(req,
-        flashes.ERROR,
-        StoredResponse.fetch(er)
-      )
+      toproc  = None
+      if type(er) == type((1, 2)):
+        kls     = er[1]
+        if type(kls) == type((1, 2)):
+          kls = kls[0]
+        toproc  = error_messenger(kls, msgobj, StoredResponse.fetch(er[0]))
+      else:
+        toproc  = StoredResponse.fetch(er)
+      flashes.add_message(req, flashes.ERROR, toproc)
     return redirect('/')
 
-  def is_fine(rept):
-    rept.save()
+  def is_fine(msg, rept):
+    got = rept.save()
     return redirect('/')
 
   return ThouMessage.parse_report(req.POST['msg'], is_fine, REPORT_SET, error_handler   = has_errors, unknown_handler = unknown)

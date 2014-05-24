@@ -9,10 +9,6 @@ def first_cap(s):
   if len(s) < 1: return s
   return s[0].upper() + s[1:]
 
-def and_join(dem, what):
-  if len(dem) < 2: dem[0]
-  return ', and '.join([', '.join(dem[0:-1]), dem[-1]])
-
 class IDField(ThouField):
   @classmethod
   def is_legal(self, ans):
@@ -241,7 +237,7 @@ class ThouMessage:
         pass
       return ukh(pz)
     if not pz.errors:
-      return fh(nch[pz.code.lower()](pz))
+      return fh(pz, nch[pz.code.lower()](pz))
     erh = lambda x: x
     try:
       erh = kwargs['error_handler']
@@ -269,13 +265,13 @@ class ThouMessage:
       try:
         if type(fld) == type((1, 2)):
           cur, err, etc  = fld[0].pull(fld[0], cod, etc, fld[1])
-          errors.extend(err)
+          errors.extend([(e, fld) for e in err])
         else:
           cur, err, etc  = fld.pull(fld, cod, etc)
-          errors.extend(err)
+          errors.extend([(e, fld) for e in err])
         fobs.append(cur)
       except ThouFieldError, err:
-        errors.append(err.complaint)
+        errors.append((err.complaint, fld))
     if etc.strip():
       errors.append('Superfluous text: "%s"' % (etc.strip(),))
     return klass(cod, fobs, errors)

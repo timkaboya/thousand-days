@@ -1,5 +1,11 @@
 {%  extends "superior.html" %}
 {%  block trunk %}
+<dl>
+{%  for tx in txes  %}
+  <dt>{{  tx.code }}</dt>
+  <dd>{{  tx.descr  }}</dd>
+{%  endfor  %}
+</dl>
 {%  for msg in msgs %}
 <form method="POST" action="/modresp/{{  msg.code  }}">
   <fieldset>
