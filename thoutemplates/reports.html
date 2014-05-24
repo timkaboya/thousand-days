@@ -8,12 +8,23 @@
   {%  endfor  %}
 </ul>
 {%  for rep in reps %}
-  {{  rep }}
   <table>
     <thead>
-      {%  for rc in rep.columns %}
-      {%  endfor  %}
+      <tr>
+        {%  for rc in rep.columns %}
+          <th>{{  rc  }}</th>
+        {%  endfor  %}
+      </tr>
     </thead>
+    <tbody>
+      {%  for rr in rep.rows %}
+        <tr>
+          {%  for elem in rr  %}
+            <td>{{  elem  }}</td>
+          {%  endfor  %}
+        </tr>
+      {%  endfor  %}
+    </tbody>
   </table>
 {%  endfor  %}
 {%  endblock  %}

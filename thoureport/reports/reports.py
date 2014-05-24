@@ -18,68 +18,14 @@ class ThouReport:
   created   = False
   columned  = False
 
-  @classmethod
-  def sql_description(self, mobj):
-    return self.__creation_sql(mobj)
-
-  @classmethod
-  def table_name(self):
-    return str(self).split('.')[-1].lower() + 's'
-
-  @classmethod
-  def __creation_sql(self, mobj):
-    fields      = mobj.fields
-    raise Exception, [x for x in fields]
-    columns     = mobj.fields.keys()
-    cols        = []
-    for col in columns:
-      fld   = fields[col]
-      fldc  = fld.__class__
-      if fld.several_fields:
-        for exp in fld.expectations():
-          subans  = (('%s_%s' % (col, exp.lower()), '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue()), fldc))
-          cols.append(subans)
-      else:
-        cols.append((col, '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue()), fldc))
-    return (self.table_name(), cols)
-
   def __init__(self, msg):
-    self.message  = msg
+    self.msg  = msg
 
-  def __ensure_table(self):
-    dbn, _ = self.__creation_sql(self.message)
-    if not self.__class__.created:
-      curz  = THE_DATABASE.cursor()
-      curz.execute('SELECT TRUE FROM information_schema.tables WHERE table_name = (%s)', [dbn])
-      row = curz.fetchone()
-      if not row:
-        curz.execute('CREATE TABLE %s ();' % (dbn,))
-      curz.close()
-      self.__class__.created = True
-    return dbn
-
-  def __ensure_columns(self):
-    dbn, cols = self.__creation_sql(self.message)
-    if not self.__class__.columned:
-      curz  = THE_DATABASE.cursor()
-      curz.execute('SELECT column_name FROM information_schema.columns WHERE table_name = (%s)', [dbn])
-      noms  = set()
-      while True:
-        row = curz.fetchone()
-        if not row: break
-        noms.add(row[0])
-      for coln, coletc, cc in cols:
-        if not (coln in noms):
-          curz.execute('ALTER TABLE %s ADD COLUMN %s %s; /*%s*/' % (dbn, coln, coletc, str(cc)))
-      curz.close()
-      self.__class__.columned = True
-    return cols
-
-  def __insertables(self):
-    fds = self.message.fields
-    cvs = {}
-    for fx in fds:
-      curfd = fds[fx]
+  def __insertables(self, fds):
+    cvs   = {}
+    ents  = self.msg.entries
+    for fx in ents:
+      curfd = ents[fx]
       if curfd.several_fields:
         for vl in curfd.working_value:
           cvs[('%s_%s' % (fx, vl)).lower()] = vl
@@ -91,20 +37,20 @@ class ThouReport:
     return cvs
 
   def save(self):
-    tbl   = self.__ensure_table()
-    cols  = self.__ensure_columns()
-    cvs   = self.__insertables()
-    curz  = THE_DATABASE.cursor()
-    cpt   = []
-    vpt   = []
-    for coln, _, escer in cols:
+    tbl, cols = self.msg.__class__.create_in_db(self.__class__)
+    cvs       = self.__insertables(cols)
+    curz      = THE_DATABASE.cursor()
+    cpt       = []
+    vpt       = []
+    for coln, _, escer, _ in cols:
       if coln in cvs:
         cpt.append(coln)
         vpt.append(escer.dbvalue(cvs[coln], curz))
-    qry   = 'INSERT INTO %s (%s) VALUES (%s);' % (tbl, ', '.join(cpt), ', '.join(vpt)) 
+    qry = 'INSERT INTO %s (%s) VALUES (%s) RETURNING indexcol;' % (tbl, ', '.join(cpt), ', '.join(vpt)) 
     curz.execute(qry)
+    ans = curz.fetchone()[0]
     curz.close()
-    return self
+    return ans
 
   @classmethod
   def load(self, msgtxt):

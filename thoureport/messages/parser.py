@@ -5,7 +5,7 @@ import re
 import psycopg2
 
 class ThouField:
-  __metaclass__   = ABCMeta
+  # __metaclass__   = ABCMeta
 
   @staticmethod
   def pull(self, cod, txt, many = False):
@@ -37,7 +37,7 @@ class ThouField:
         if many and got:
           etc = prv
         else:
-          err.append(('%s_invalid_code_field' % (cod,)).lower())
+          err.append(('%s_invalid_code_field_%s' % (cod, self.subname())).lower())
         break
         # err.append("Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
       if not many: break
@@ -77,13 +77,21 @@ class ThouField:
 
   @classmethod
   def dbvalue(self, it, kasa):
-    return kasa.mogrify('%s', it)
+    return kasa.mogrify('%s', (it,))
 
   @classmethod
   def default_dbvalue(self):
     # TODO: Find the callers and re-educate them.
     # return self.fixed_for_db(self.default_value)
     return self.fixed_for_db(None)
+
+  @classmethod
+  def subname(self):
+    return str(self).split('.')[-1].lower()
+
+  @classmethod
+  def display(self):
+    return re.sub(r'field$', '', str(self).split('.')[-1].lower())
 
   def __init__(self, val, many):
     self.working_value  = val

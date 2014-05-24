@@ -3,6 +3,11 @@
 from abc import ABCMeta, abstractmethod
 import re
 from thoureport.messages.parser import *
+from thoureport.reports.reports import THE_DATABASE as db
+
+def first_cap(s):
+  if len(s) < 1: return s
+  return s[0].upper() + s[1:]
 
 def and_join(dem, what):
   if len(dem) < 2: dem[0]
@@ -54,10 +59,6 @@ class SymptomCodeField(CodeField):
             'OE', 'PC', 'RB', 'SA', 'SB', 'VO']
 
 class RedSymptomCodeField(SymptomCodeField):
-  @classmethod
-  def invalid_error(self):
-    return 'Please check that you have the correct type of current symptom or symptoms in the appropriate place in your Red Alert Report. These can be %s. If you have more than 1 they must be separated by a space.' % (and_join(self.expectations(), ', '))
-
   @classmethod
   def expectations(self):
     return ['AP', 'CO', 'HE', 'LA', 'MC', 'PA', 'PS', 'SC', 'SL', 'UN']
@@ -176,6 +177,46 @@ class ThouMsgError:
 
 class ThouMessage:
   fields  = []
+  created = False
+
+  # @staticmethod
+  @classmethod
+  def creation_sql(self, repc):
+    cols  = []
+    col   = None
+    for fld in self.fields:
+      if type(fld) == type((1, 2)):
+        fldc  = fld[0]
+        col   = str(fldc).split('.')[-1].lower()
+        for exp in fldc.expectations():
+          subans  = ('%s_%s' % (col, exp.lower()), '%s DEFAULT %s' % (fldc.dbtype(), fldc.default_dbvalue()), fldc, exp)
+          cols.append(subans)
+      else:
+        col = str(fld).split('.')[-1].lower()
+        cols.append((col, '%s DEFAULT %s' % (fld.dbtype(), fld.default_dbvalue()), fld, first_cap(fld.display())))
+    return (str(repc).split('.')[-1].lower() + 's', cols)
+
+  @classmethod
+  def create_in_db(self, repc):
+    try:
+      tbl, cols = stuff = self.creation_sql(repc)
+      if self.created: return stuff
+      curz  = db.cursor()
+      curz.execute('SELECT TRUE FROM information_schema.tables WHERE table_name = %s', (tbl,))
+      if not curz.fetchone():
+        curz.execute('CREATE TABLE %s (indexcol SERIAL NOT NULL);' % (tbl,))
+        curz.close()
+        return self.create_in_db(repc)
+      for col in cols:
+        curz.execute('SELECT TRUE FROM information_schema.columns WHERE table_name = %s AND column_name = %s', (tbl, col[0]))
+        if not curz.fetchone():
+          curz.execute('ALTER TABLE %s ADD COLUMN %s %s;' % (tbl, col[0], col[1]))
+      curz.close()
+      db.commit()
+      self.created  = True
+      return stuff
+    except Exception, e:
+      raise Exception, ('Table creation: ' + str(e))
 
   @staticmethod
   def pull_code(msg):
@@ -232,7 +273,6 @@ class ThouMessage:
         else:
           cur, err, etc  = fld.pull(fld, cod, etc)
           errors.extend(err)
-        # fobs.extend(cur)
         fobs.append(cur)
       except ThouFieldError, err:
         errors.append(err.complaint)
@@ -241,12 +281,12 @@ class ThouMessage:
     return klass(cod, fobs, errors)
 
   def __init__(self, cod, fobs, errs):
-    self.code   = cod
-    self.errors = errs
-    def assembler(hsh, dat):
-      hsh[dat.__class__.__name__.lower()] = dat
-      return hsh
-    self.fields = reduce(assembler, fobs, {})
+    self.code     = cod
+    self.errors   = errs
+    def as_hash(p, n):
+      p[n.__class__.subname()] = n
+      return p
+    self.entries  = reduce(as_hash, fobs, {})
 
   def __enter__(self):
     self.errors = self.errors.extend(self.semantics_check())
@@ -325,6 +365,15 @@ class PNCMessage(ThouMessage):
              (SymptomCodeField, True),
              InterventionField, MotherHealthStatusField]
 
+# Testing field. Takes any of my names.
+class TextField(ThouField):
+  @classmethod
+  def expectations(self):
+    return ['Revence', 'Kato', 'Kalibwani']
+
+# Testing message.
+class RevMessage(ThouMessage):
+  fields  = [(TextField, True)]
 
 MSG_ASSOC = {
   'PRE':  PregMessage,
@@ -340,4 +389,6 @@ MSG_ASSOC = {
   'RAR':  RedResultMessage,
   'NBC':  NBCMessage,
   'PNC':  PNCMessage,
+
+  'REV':  RevMessage,
 }

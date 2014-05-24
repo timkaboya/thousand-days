@@ -7,14 +7,27 @@ from thoureport.models import *
 
 REPORT_SET = {
   'RED':  RedReport,
+  'REV':  RevenceReport,
 }
 
 class TraversibleReport:
-  def __init__(self, repc):
-    self.repc = repc
+  def __init__(self, repc, msgc):
+    self.repc                 = repc
+    self.msgc                 = msgc
+    self.tablename, self.cols = msgc.creation_sql(repc)
 
   def columns(self):
-    raise Exception, self.repc.create_table()
+    self.msgc.create_in_db(self.repc)
+    return [x[3] for x in self.cols]
+
+  def rows(self):
+    curz  = db.cursor()
+    qry   = 'SELECT %s FROM %s' % (', '.join([x[0] for x in self.cols]), self.tablename)
+    curz.execute(qry)
+    rs  = curz.fetchall()
+    curz.close()
+    db.commit()
+    return rs
 
 def smser(req):
   msgs  = StoredSMS.objects.all()
@@ -24,11 +37,12 @@ def reports(req, rcode = None):
   reps  = []
   if rcode:
     try:
-      reps  = [(REPORT_SET[rcode[1:]], MSG_ASSOC[rcode[1:]])]
+      reqc      = rcode[1:]
+      fst, snd  = metup = REPORT_SET[reqc], MSG_ASSOC[reqc]
+      reps      = [TraversibleReport(fst, snd)]
     except Exception, e:
+      raise e
       pass
-  raise Exception, reps[0][1].fields
-  raise Exception, reps[0][0].sql_description(reps[0][1])
   return render(req, 'reports.html', {'reps': reps, 'repset': REPORT_SET})
 
 def messages(req):
