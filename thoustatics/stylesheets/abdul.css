@@ -10,6 +10,23 @@ body {
     padding: 0.125em;
     text-align: center;
     padding-right: 3em; }
+  body dl.responses {
+    background: white;
+    width: 60%;
+    margin-left: 20%;
+    color: #9c5c3d;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em; }
+    body dl.responses dt, body dl.responses dd {
+      margin: 0px; }
+    body dl.responses dt {
+      float: left;
+      margin-left: 1em;
+      width: 10%;
+      padding-right: 1em;
+      font-weight: bolder; }
   body table {
     font: inherit;
     width: 80%;

@@ -1,6 +1,6 @@
-$f1: "Liberation Serif";
-$f2: "Liberation Sans";
-$f3: "Liberation Mono";
+$f1: "Liberation Serif", serif;
+$f2: "Liberation Sans", sans-serif;
+$f3: "Liberation Mono", monospace;
 
 $plainwhite: rgb(255, 255, 255);
 $seethru: rgba(255, 255, 255, 0.8);
@@ -26,6 +26,7 @@ body
     text-align: center;
     color: $col2;
     font-variant: small-caps;
+    page-break-after: avoid;
     font-variant-settings: "diag", "dlig";
 
     &:before
@@ -69,6 +70,7 @@ body
     {
       text-align: left;
       font-variant: normal;
+      page-break-after: avoid;
     }
 
     a
@@ -130,7 +132,7 @@ body
               page-break-after: always;
               display: block;
               border-radius: 1em 1em 1em 1em;
-              box-shadow: 1em 1em 1em $shadow;
+              box-shadow: 0.125em 0.125em 0.125em $shadow;
               border: solid 1px $col1;
 
               &.withtitle

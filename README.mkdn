@@ -2,4 +2,4 @@ RapidSMS: 1000 Days
 ===================
 Reusable Components Technical Documentation
 -------------------------------------------
-For now, dear reader, check <a href="README.html">README.html</a>. After all, it is *technical* documentation, yeah? Go read the HTML, O Programmer! :-p
+For now, dear reader, check the <a href="thoutemplates/rapid1000.html">Technical Documentation</a> in HTML (or <a href="doc/rapid1000.pdf">in PDF</a>), which is synchronised with what is available as the online documentation within the application.

@@ -1,12 +1,23 @@
-%h2 History
-%p
-  Hard-coded messages, a previous blunder. Unjustifiable, even with a need to translate.
-%h2 Response Codes System
-%p
-  Now the error messages in the database are referred to by codes. Separation of concerns. Retains translatability.
-%p
-  DB interface for managing responses.
-%p
-  Dynamic response fields.
-%p
-  Monoidal responses.
+.double
+  %h2 History
+  %p
+    While it is easy to overlook them in the design of such an application, experience teaches that the messages that are sent in reponse to reports cannot be implemented properly if they also have to be defined programmatically, as the previous system had implemented.
+  %p
+    The ostensible reason given for the previous design was to improve translatability, and GNU <i>gettext</i> was used extensively to implement translation programmatically. This is nevertheless a poor way to implement translation for a project like <i>RapidSMS 1000 Days</i>.
+  %h2 Response Codes System
+  %p
+    %h3 Responses as Data
+    In the new system, the response messages—all response messages—are delivered via a layer which translates from programmatic code to human language text.
+    %br/
+    This permits a greater separation of concerns, and yet retains translatability. In fact, since codes are constructed programmatically, they are specialised per language, making translation even easier and more-accurate than it is at present.
+  %p
+    %h3 Self-Explanatory Code Names
+    There is an integrated interface for permitting the system administrator to modify any response message. The messages are identified by their codes, which are known to the database and to the implementing functions. The admin or the translator can conclude the meaning and purpose of the code, even when it is just the default message. The codes composed are also names and messages that can be understood, and they are stored along with a default error message.
+  %p
+    %h3 Response Keyword Substitution
+    The error messages recorded in the database are expected to contain any number of specific keywords that permit automatic re-writing of those responses to replace the keywords with the fitting message meta-data, enabling all messages to be automatically specialised to the submitting party, not just by language, but also according to some relationship to the submitted message and the Message and Report consequent objects.
+  %p
+    %h3 Monoidal Responses
+    If the <i>RapidSMS 1000 Days</i> provides a response code that is not known, that code is given some explanatory default text automatically, and then flagged for update by the system administrator.
+    %br/
+    This way, the application can confidently refer to codes knowing that they would be filled in properly later on, even if they do not exist at the present moment.

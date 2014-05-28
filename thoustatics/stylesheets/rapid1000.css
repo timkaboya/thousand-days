@@ -1,14 +1,15 @@
 body {
-  font-family: "Liberation Serif";
+  font-family: "Liberation Serif", serif;
   color: #402619;
   font-size: 15pt; }
   body a {
     color: #6aa0c2; }
   body h1, body h2, body h3, body h4, body h5, body h6 {
-    font-family: "Liberation Sans";
+    font-family: "Liberation Sans", sans-serif;
     text-align: center;
     color: #9c5c3d;
     font-variant: small-caps;
+    page-break-after: avoid;
     font-variant-settings: "diag", "dlig"; }
     body h1:before, body h2:before, body h3:before, body h4:before, body h5:before, body h6:before {
       content: " ";
@@ -22,7 +23,7 @@ body {
     font-size: 20pt;
     page: coverpage; }
   body .toc {
-    font-family: "Liberation Sans";
+    font-family: "Liberation Sans", sans-serif;
     font-size: 60%;
     page-break-after: always; }
     @media screen {
@@ -35,7 +36,8 @@ body {
         margin-left: 10%; } }
     body .toc h1, body .toc h2, body .toc h3, body .toc h4, body .toc h5, body .toc h6 {
       text-align: left;
-      font-variant: normal; }
+      font-variant: normal;
+      page-break-after: avoid; }
     body .toc a {
       text-decoration: none; }
     body .toc .lk {
@@ -47,7 +49,7 @@ body {
         font-family: #6aa0c2; }
     body .toc .toctime {
       font-size: 70%;
-      font-family: "Liberation Mono";
+      font-family: "Liberation Mono", monospace;
       vertical-align: bottom;
       text-align: center;
       margin-top: 5em; }
@@ -69,7 +71,7 @@ body {
         page-break-after: always;
         display: block;
         border-radius: 1em 1em 1em 1em;
-        box-shadow: 1em 1em 1em rgba(0, 0, 0, 0.5);
+        box-shadow: 0.125em 0.125em 0.125em rgba(0, 0, 0, 0.5);
         border: solid 1px #402619; }
         body #main .docs .doc .info .single .screenshot.withtitle {
           string-set: scrtitle attr(alt); }
@@ -79,10 +81,10 @@ body {
     page-break-before: always;
     font-size: 7pt;
     text-align: center;
-    font-family: "Liberation Mono"; }
+    font-family: "Liberation Mono", monospace; }
 
 @page docpage {
-  font-family: "Liberation Mono";
+  font-family: "Liberation Mono", monospace;
   font-size: 50%;
   color: #9c5c3d;
   @bottom-right-corner {
@@ -96,7 +98,7 @@ body {
   size: a4 landscape;
   @top-center {
     content: string(scrtitle);
-    font-family: "Liberation Sans";
+    font-family: "Liberation Sans", sans-serif;
     text-align: center;
     color: #9c5c3d;
     font-variant: small-caps; } }

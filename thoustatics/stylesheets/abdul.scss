@@ -25,6 +25,32 @@ body
     padding-right: 3em;
   }
 
+  dl.responses
+  {
+    background: $plainwhite;
+    width: 60%;
+    margin-left: 20%;
+    color: $col2;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+
+    dt, dd
+    {
+      margin: 0px;
+    }
+
+    dt
+    {
+      float: left;
+      margin-left: 1em;
+      width: 10%;
+      padding-right: 1em;
+      font-weight: bolder;
+    }
+  }
+
   table
   {
     font: inherit;
