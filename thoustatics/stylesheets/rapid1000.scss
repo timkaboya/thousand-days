@@ -51,8 +51,16 @@ body
 
   .toc
   {
-    width: 80%;
-    margin-left: 10%;
+    @media screen
+    {
+      width: 40%;
+      margin-left: 30%;
+    }
+    @media print
+    {
+      width: 80%;
+      margin-left: 10%;
+    }
     font-family: $f2;
     font-size: 60%;
     page-break-after: always;
@@ -95,15 +103,47 @@ body
   {
     .docs
     {
-      font-size: 10pt;
+      font-size: 13pt;
+      text-align: justify;
       counter-reset: page 1;
       page: docpage;
 
+      @media screen
+      {
+        width: 50%;
+        margin-left: 25%;
+      }
+
       .doc
       {
+        font-variant-settings: "diag", "dlig";
+
         .info
         {
-          column-count: 2;
+          .single
+          {
+            .screenshot
+            {
+              page: screenpage;
+              width: 100%;
+              page-break-before: always;
+              page-break-after: always;
+              display: block;
+              border-radius: 1em 1em 1em 1em;
+              box-shadow: 1em 1em 1em $shadow;
+              border: solid 1px $col1;
+
+              &.withtitle
+              {
+                string-set: scrtitle attr(alt);
+              }
+            }
+          }
+
+          .double
+          {
+            column-count: 2;
+          }
         }
       }
     }
@@ -132,6 +172,20 @@ body
 
 @page coverpage
 {
-  background: url('rapid1000.jpg') no-repeat center fixed;
+  background: url('../images/preg.jpg') no-repeat center fixed;
   background-image-resolution: 80dpi;
+}
+
+@page screenpage
+{
+  size: a4 landscape;
+
+  @top-center
+  {
+    content: string(scrtitle);
+    font-family: $f2;
+    text-align: center;
+    color: $col2;
+    font-variant: small-caps;
+  }
 }

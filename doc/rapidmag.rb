@@ -2,20 +2,27 @@
 
 require 'haml'
 require 'kramdown'
+require 'pathname'
 
 class Doc
   attr_reader :id, :name
   def initialize id, pth
     @id   = id
     @path = pth
-    @name = pth.gsub(/\.txt$/, '').gsub(/\W/, ' ')
+    @name = pth.gsub(/\.haml$/, '').gsub(/\.txt$/, '')  #.gsub(/\W/, ' ')
   end
 
   def to_html
+    statdir = Pathname.new((ENV['STATIC_DIR'] || '/static/').to_s)
     File.open @path do |fch|
-      # fch.read.split("\n\n").map {|x| %[<p>#{x}</p>]}.join("\n\n")
       @rod  ||= fch.read
-      Kramdown::Document.new(@rod).to_html
+      if @path =~ /\.txt$/i then
+        Kramdown::Document.new(@rod).to_html
+      elsif @path =~ /\.haml/i then
+        Haml::Engine.new(@rod).render binding
+      else
+        @rod
+      end
     end
   end
 end

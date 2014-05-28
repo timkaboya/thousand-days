@@ -12,6 +12,7 @@ urlpatterns = patterns('',
 
     url(r'^messages$', 'thoureport.views.messages', name='messages'),
     url(r'^reports(/\w+)?$', 'thoureport.views.reports', name='reports'),
+    url(r'^docs?$', 'thoureport.views.docs', name='docs'),
 
     url(r'^admin/', include(admin.site.urls)),
 )

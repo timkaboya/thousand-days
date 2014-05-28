@@ -1,0 +1,39 @@
+.double
+  %h2 The Two Senses of “Scaling”
+  %p
+    Not every relational database management system (RDBMS) is suited for the same tasks; and, often, as a project evolves it grows out of one RDBMS and works better with another. The good system designer knows when that time arrives, and makes the decision accordingly.
+  %p
+    Database systems are designed and built with several considerations and trade-offs in mind, and two of them are relevant to the concept of “scaling” as we will discuss it in the present section. These are also the main considerations that have influenced the database decisions in this phase of the project.
+  %p
+    It should be noted that trade-offs are necessitated in engineering by the hard physical limits that are a fact of nature. An algorithm that works best on large amounts of data is usually ill-suited for small amounts of data, and would be wasteful if used. Similarly, naïve algorithms are often easy to implement and cheap to execute, but will often break down when they encounter unusual input.
+  %p
+    An example that could be given is that a house designed for a small family of five would not be able to accomodate a large family of twelve. Yet since most nuclear families are small, one finds that most houses can comfortably accomodate five people. It would be wasteful to build large houses as a matter of routine, in a culture where one finds no extended families. If this were to change, so would the average house size.
+  %p
+    %h3 Scaling With Data
+    Scaling with data refers to the ability of an RDBMS to accomodate increasing amounts of data without adverse degeneration in performance. While a gradual change in performance is always expected as the amount data increases, some database systems are designed to be used in scenarios of small-to-medium datasets. Most websites, for instance, will never have to deal with millions of subscribers, and so the database systems designed for the average website are not suitable for use in national-scale projects, and <i>vice versa</i>.
+    %h3 Scaling With Resources
+    This refers to the ability of the RDMS to accomodate more resources (what is referred to as “vertical scaling” and “horizontal scaling”) without affecting the functioning of the database adversely. In most use-cases, the database is a single system on a single machine, and this is a case that ought to be highly-optimised because it is very common. However, this is always a trade-off, since a system optimised for this very common case can generally not be extended to scale well with increased resources.
+  %p
+    In the final analysis, the <i>RapidSMS 1000 Days</i> project, having outgrown the initial assumptions and design, and evidently become more of a national-scale project, is better-served by a mature RDBMS designed for large-scale deployment and consequent scaling. This is a demonstrative list of the database systems that are designed for this type of project:
+    %ol
+      %li Microsoft SQL Server
+      %li Oracle Database System
+      %li PostgreSQL Database System
+    Given other considerations, such as availability of adapters, programmability, and usability, the open-source PostgreSQL Database System is found to be the best fit for the project.
+  %h2 PostgreSQL <i>versus</i> MySQL
+  %p
+    Given that the RapidSMS project has historically used the MySQL database, a brief comparison of the two is warranted. Both support the same standard SQL syntax, and are semantically-equivalent. Nevertheless, there are large differences both by design and by circumstance.
+  %p
+    %h3 PostgreSQL
+    Starting development in the 1990s, and derived from an RDBMS whose history goes back to the 1980s, the PostgreSQL system has been refined and improved steadily by a large and dedicated community of open source developers, with the support of both large and small companies.<br />
+    PostgreSQL is also the best-documented database system. For this reason, it is deployed in such sectors as the telecom industry, where its abilities are tested, developed, and widely appreciated.
+    %h3 MySQL
+    MySQL, on the other hand, has seen about half as much time of development, and far less involvement from varied situations, having been always a simple database for the simple website. While it is tempting to thing of RapidSMS as a web application, because it exploits web technology, data collection systems like RapidSMS have very different concerns (as we will discuss shortly).<br />
+    Honestly, MySQL has one main benefit: programmers are commonly well-practiced with it, because it can work with extremely small resources, such as those found on standard laptops and desktop PCs. It is mainly for this reason—and its integration with the popular programming language PHP, on which most programmers cut their unfortunate little teeth—that it is considered a good database. But in comparison with PostgreSQL—and particularly given our requirements—it has no saving graces.
+  %p
+    On the programming level, there is no significant difference in code written for PostgreSQL and code written for MySQL. All web development frameworks, and in particular the Django framework that we use in RapidSMS, provide an abstraction layer that hide the details of the database, such that to switch from one to another is a matter of changing one line in a configuration file.
+  %p
+    At present, we use MySQL simply due to circumstance. In other words: it is what we found, so we use it. There is no particular feature of MySQL that we desire in the project, and certainly none that cannot be got from another good relational database.
+  %p
+    On the other hand, there is a particular feature of the PostgreSQL Database System that is required in the RapidSMS project, one that MySQL doesn’t (yet) have.<br />
+    PostgreSQL handles symbolic data in a very efficient way, both for storage and manipulation. by “symbolic data”, we mean (for instance) the short strings that are used as “codes” in the RapidSMS application. PostgreSQL has a collection of very complex but very efficient algorithms for processing such data.

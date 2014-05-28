@@ -1,0 +1,59 @@
+.double
+  %h2 Purpose
+  %p This section introduces the two core objects in the <i>RapidSMS 1000 Days</i> code, with the goal of familiarising the reader with them and their implications for the rest of the code and data.
+  %p They affect the rest of the program on all levels. Since the main item of the project is the report, which is delivered as a message, these two objects need to be described and understood.
+  %h2 Prior Situation
+  %p
+    In the previous RapidSMS installations, the code-base relied heavily on a Report object which was a composite of report codes which were kept in their own separate database table.
+    %br/
+    The consequence was that a request for a single report generated at least two different queries, one of them on a table that grew in size exponentially. For every report, there are several codes. But if, for example, a report has 10 codes, a query for 10 reports would result in 100 requests. This doesn’t really scale, especially in the deployment scenarios of the <i>RapidSMS 1000 Days</i> project.
+  %p
+    There is also an organisational problem with having report objects whose core data is stored in disparate locations, even if in the same database. In the standard Object Relational Mapper used in the project considers these two—the reports and their fields—As distinct and separate items which do not have to be kept in synchrony.
+  %p
+    It is this design decision in particular that resulted in a lot of the scaling problems that were encountered in the previous deployments of RapidSMS, which in large part have necessitated this phase of the redesign.
+  %h2 The Goals of the New Database Design
+  %p
+    %h3 Semantic Backward-Compatibility
+    The most-fundamental feature of the new database design is that it doesn’t break semantic compatibility with the previous database design. In all instances, there is a strict equivalence of capabilities.
+  %p
+    %h3 Specialised Alternative Object-Relational Mapper
+    The previous database design was dependent entirely on the Django Object Relational Mapper. This resulted in a very simple database structure for representing the reports (specifically, the isolation of a report’s attributes to a table of their own) that implemented the well-known database normal forms (1NF, 2NF, <i>etc.</i>). However, when one has considerations other than pure relational calculus, such strictness leads to a loss of efficiency.
+  %p
+    %h3 Extensibile Core
+    Due to our experience in having to extend the functionality of the previous system, we are convinced that the Object Relational Mapper should be be specialised to some degree for the purposes of storing reports for efficient analysis later on. Furthermore, it should expose extensive database-related metadata about the objects and the database connection to the programmer, to permit further extensions of the ORM in a direction that is conducive for any specific project, without having to diverge from the core code-base of RapidSMS.
+  %p
+    %h3 Flat Report Tables
+    A crucial feature of the new database design is that it would take O(n) time complexity to process the commonest query executed against a set of reports—since all the crucial data is now in the same place, as it is supposed to be—which was not the case with the previous system.
+  %h2 The Goals of the New Object Design
+  %p
+    The core objects of the RapidSMS 1000 Project have also been redesigned to improve extensibility and code-reusability.
+    %h3 Tightly-Coupled Report and Message objects
+    The relationship between the Report and the Message is also better-expressed by the explicit use of the factory model, generating Reports conditionally from Messages, and creating Messages unconditionally from the SMS delivered.
+  %p
+    %h3 Tightly-Coupled Report and Message objects
+    The Message and the Report replace the App as the core application object. In the previous App model, every keyword is considered a separate application, which was always responsible for dealing with the text in a programmatic way.
+    %br/
+    In the new model, a lot of the basic assumptions of a reporting SMS are already codified in the base classes. This means that the consistencies that all “apps” share are already described programmatically in one place, and enables the structure of the expected Messages to be described declaratively, and not programmatically.
+  %p
+    %h2 Message Description
+    This leads to a rough equivalence between the descriprion of the Message object in the code and the description in the documentation of the message it handles.
+.single
+  %img{'class' => 'screenshot withtitle', src: statdir + 'images/c1.png', alt: 'Message Objects Described (Almost) Rhetorically'}/
+.double
+  %p
+    %h2 Granularised Message Validation
+    The base classes are also mostly abstract, describing generic predicates for validation and handling, so that complicated validations can be programmed into the system without having to extend the fundamental objects of the code-base.
+    %br/
+    Checks can vary from simple bounds-checking to querying external databases.
+  %p
+    These checks are placed on separate levels of validation, such that a keyword can be described at different levels of granularity. The keyword that only needs to implement simple checks on the data need not be described in many lines of code; yet if it is necessary to implement elaborate logic, it is still possible to program the low-level predicates.
+  %p
+    %h2 One App, One Framework, Two ORMs
+    The new Object Relational Mapper is strongly influenced by our particular situation and experience in the past. This ORM is therefore not suited for the more-normal cases, for which the Django ORM being used in the previous installations was suited.
+    %br/
+    Therefore we have found it reasonable and sound to leave the Django ORM accessible to the rest of the application, where it may be used for the rest of the non-crucial objects of the <i>RapidSMS 1000 Days</i> project.
+  %p
+    %h2 Sample Application
+    The code comes with a pre-created sample application which describes a report type that is widely divergent from any that we have to deal with in the <i>RapidSMS 1000 Days</i> project. This sample application proves the extensibility and wide applicability of the new base system, since in fact it was developed with the <i>RapidSMS 1000 Days</i> project use-cases in mind.
+.single
+  %img{'class' => 'screenshot withtitle', src: statdir + 'images/sample.png', alt: 'Implementing the Sample Application'}/

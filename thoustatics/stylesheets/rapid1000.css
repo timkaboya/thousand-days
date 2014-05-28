@@ -22,11 +22,17 @@ body {
     font-size: 20pt;
     page: coverpage; }
   body .toc {
-    width: 80%;
-    margin-left: 10%;
     font-family: "Liberation Sans";
     font-size: 60%;
     page-break-after: always; }
+    @media screen {
+      body .toc {
+        width: 40%;
+        margin-left: 30%; } }
+    @media print {
+      body .toc {
+        width: 80%;
+        margin-left: 10%; } }
     body .toc h1, body .toc h2, body .toc h3, body .toc h4, body .toc h5, body .toc h6 {
       text-align: left;
       font-variant: normal; }
@@ -46,11 +52,29 @@ body {
       text-align: center;
       margin-top: 5em; }
   body #main .docs {
-    font-size: 10pt;
+    font-size: 13pt;
+    text-align: justify;
     counter-reset: page 1;
     page: docpage; }
-    body #main .docs .doc .info {
-      column-count: 2; }
+    @media screen {
+      body #main .docs {
+        width: 50%;
+        margin-left: 25%; } }
+    body #main .docs .doc {
+      font-variant-settings: "diag", "dlig"; }
+      body #main .docs .doc .info .single .screenshot {
+        page: screenpage;
+        width: 100%;
+        page-break-before: always;
+        page-break-after: always;
+        display: block;
+        border-radius: 1em 1em 1em 1em;
+        box-shadow: 1em 1em 1em rgba(0, 0, 0, 0.5);
+        border: solid 1px #402619; }
+        body #main .docs .doc .info .single .screenshot.withtitle {
+          string-set: scrtitle attr(alt); }
+      body #main .docs .doc .info .double {
+        column-count: 2; }
   body #footer {
     page-break-before: always;
     font-size: 7pt;
@@ -65,5 +89,14 @@ body {
     content: counter(page); } }
 
 @page coverpage {
-  background: url("rapid1000.jpg") no-repeat center fixed;
+  background: url("../images/preg.jpg") no-repeat center fixed;
   background-image-resolution: 80dpi; }
+
+@page screenpage {
+  size: a4 landscape;
+  @top-center {
+    content: string(scrtitle);
+    font-family: "Liberation Sans";
+    text-align: center;
+    color: #9c5c3d;
+    font-variant: small-caps; } }

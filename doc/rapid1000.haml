@@ -8,12 +8,14 @@
       = surround '(', ')' do
         = precede 'v' do
           = ver
-    %link{rel: 'stylesheet', href: 'rapid1000.css', type: 'text/css'}/
+    %link{rel: 'stylesheet', href: '../thoustatics/stylesheets/rapid1000.css', type: 'text/css', media: 'print'}/
+    %link{rel: 'stylesheet', href: '/static/stylesheets/rapid1000.css', type: 'text/css', media: 'screen'}/
   %body
     #main
       .cover
         %h1=  tit
       .toc
+        %h1=  tit
         %h2 Table of Contents
         %table
           %tbody

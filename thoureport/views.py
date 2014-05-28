@@ -11,7 +11,7 @@ REPORT_SET = {
 }
 
 TRANSFORMATIONS = {
-  '[...]' : (
+  '[!!!]' : (
     'Expected codes',
     lambda x: and_join(x.expectations())
   )
@@ -84,6 +84,10 @@ def resp_mod(req, cod):
   except Exception, e:
     StoredResponse.objects.create(code = req.POST['code'], text = req.POST['msg'])
   return redirect('/responses')
+
+def docs(req):
+  msgs  = StoredResponse.objects.all()
+  return render(req, 'rapid1000.html', {})
 
 def responses(req):
   msgs  = StoredResponse.objects.all()

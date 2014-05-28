@@ -1,0 +1,6 @@
+The audience of this document includes both the technical personel responsible for the day-to-day operation of the <i>RapidSMS 1000 Days</i> system and the project managers  of UNICEF Rwanda and Pivot Access.
+
+In particular, the programmers of the system will find information that complements the documentation available with the source code.
+Tutorials, FAQs, tips, tricks, and general guides for programmers shall be included in this document.
+
+System administrators will also find the <i>RapidSMS 1000 Days</i> system requirements and dependencies specified in this document, to facilitate installation on a fresh server. 
