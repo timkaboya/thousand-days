@@ -1,4 +1,7 @@
 # encoding: utf-8
+#!/usr/bin/env python
+# vim: ai ts=2 sts=4 et sw=4
+
 
 from thoureport.messages.parser import *
 from thousand.settings import DATABASES

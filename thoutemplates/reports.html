@@ -20,7 +20,13 @@
       {%  for rr in rep.rows %}
         <tr>
           {%  for elem in rr  %}
-            <td>{{  elem  }}</td>
+            <td>
+            {%  if elem %}
+              {{  elem  }}
+            {%  else %}
+              •
+            {%  endif %}
+            </td>
           {%  endfor  %}
         </tr>
       {%  endfor  %}

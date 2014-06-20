@@ -1,4 +1,6 @@
 # encoding: utf-8
+#!/usr/bin/env python
+# vim: ai ts=2 sts=4 et sw=4
 
 from abc import ABCMeta, abstractmethod
 import re
@@ -17,10 +19,10 @@ class IDField(ThouField):
 class DateField(ThouField):
   @classmethod
   def is_legal(self, fld):
-    ans = re.match(r'(\d{2})\.(\d{2})\.(\d{4})')
+    ans = re.match(r'(\d{2})\.(\d{2})\.(\d{4})', fld)
     if not ans: return 'pre_4'
     gps = ans.groups()
-    return [] # Check that it is a valid date. TODO. Move to semantics part?
+    return [] # Check that it is a valid date. To be Done.  Move to semantics part?
 
 class NumberField(ThouField):
   @classmethod
@@ -67,18 +69,22 @@ class LocationField(CodeField):
 class FloatedField(CodeField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'\w+\d+(\.\d+)?', fld) else 'bad_floated_field'
+    return [] if re.match(r'\w+\d+(\.\d+)?$', fld) else 'bad_floated_field'
 
 class NumberedField(CodeField):
   @classmethod
   def is_legal(self, fld):
     return [] if re.match(r'\w+\d+', fld) else 'bad_numbered_field'
 
-class HeightField(NumberedField):
-  pass
+class HeightField(FloatedField):
+  @classmethod
+  def is_legal(self, fld):
+    return [] if re.match(r'HT\d+(\.\d+)', fld) else 'bad_height_code'
 
 class WeightField(FloatedField):
-  pass
+  @classmethod
+  def is_legal(self, fld):
+    return [] if re.match(r'WT\d+(\.\d+)', fld) else 'bad_weight_code'
 
 class ToiletField(CodeField):
   @classmethod
@@ -93,22 +99,22 @@ class HandwashField(CodeField):
 class PhoneBasedIDField(IDField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'0\d{15}', fld) else 'bad_phone_id'
+    return [] if re.match(r'\d{16}$', fld) else 'bad_phone_id'
 
 class ANCField(NumberedField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'\w+\d', fld) else 'anc_code'
+    return [] if re.match(r'\w+\d$', fld) else 'anc_code'
 
 class PNCField(NumberedField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'\w+\d', fld) else 'pnc_code'
+    return [] if re.match(r'\w+\d$', fld) else 'pnc_code'
 
 class NBCField(NumberedField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'\w+\d', fld) else 'nbc_code'
+    return [] if re.match(r'\w+\d$', fld) else 'nbc_code'
 
   @classmethod
   def expectations(self):
@@ -160,7 +166,7 @@ class VaccinationCompletionField(VaccinationField):
 class MUACField(FloatedField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'MUAC\d+(\.\d+)', fld) else 'bad_muac_code'
+    return [] if re.match(r'MUAC\d+(\.\d+)$', fld) else 'bad_muac_code'
 
 class DeathField(CodeField):
   @classmethod
@@ -270,8 +276,9 @@ class ThouMessage:
           cur, err, etc  = fld.pull(fld, cod, etc)
           errors.extend([(e, fld) for e in err])
         fobs.append(cur)
-      except ThouFieldError, err:
-        errors.append((err.complaint, fld))
+      except Exception, err:
+        print fld
+        errors.append((str(err), fld))
     if etc.strip():
       errors.append('Superfluous text: "%s"' % (etc.strip(),))
     return klass(cod, fobs, errors)
@@ -298,7 +305,7 @@ class ThouMessage:
 
   @abstractmethod
   def semantics_check(self):
-    return ['Ariko Didier! I told you ThouMessage#semantics_check is abstract.']  # Hey, why doesn’t 'abstract' scream out? TODO.
+    return ['No Kalibwani, Stop it.! I told you ThouMessage#semantics_check is abstract.']  # Hey, why doesn’t 'abstract' scream out? TODO.
 
 class UnknownMessage(ThouMessage):
   pass
@@ -362,14 +369,21 @@ class PNCMessage(ThouMessage):
              InterventionField, MotherHealthStatusField]
 
 # Testing field. Takes any of my names.
-class TextField(ThouField):
-  @classmethod
-  def expectations(self):
-    return ['Revence', 'Kato', 'Kalibwani']
+class TimField(ThouField):
+    @classmethod 
+    def expectations(self):
+        return ['Timothy', 'Kaboya', 'Kalimba']
+
+class RevField(ThouField):
+    @classmethod
+    def expectations(self):
+        return ['Revence', 'Kato', 'Kalibwani']
 
 # Testing message.
-class RevMessage(ThouMessage):
-  fields  = [(TextField, True)]
+class TIMMessage(ThouMessage):
+    fields  = [(TimField, True)]
+class REVMessage(ThouMessage):
+    fields = [(RevField, True)]
 
 MSG_ASSOC = {
   'PRE':  PregMessage,
@@ -386,5 +400,6 @@ MSG_ASSOC = {
   'NBC':  NBCMessage,
   'PNC':  PNCMessage,
 
-  'REV':  RevMessage,
+  'REV': REVMessage,
+  'TIM':  TIMMessage,
 }

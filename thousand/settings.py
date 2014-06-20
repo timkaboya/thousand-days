@@ -1,9 +1,14 @@
+#!/usr/bin/env python
+# vim: ai ts=2 sts=2 et sw=2
 """
 Django settings for thousand project.
 
+For the full list of settings and their values, see
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
 
+#!/usr/bin/env python
+# vim: ai ts=2 sts=2 et sw=2
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """

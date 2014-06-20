@@ -37,6 +37,7 @@ class ThouField:
         if many and got:
           etc = prv
         else:
+          print cod, many, got, prv
           err.append(('%s_invalid_code_field_%s' % (cod, self.subname())).lower())
         break
         # err.append("Invalid code (expected %s; not %s)" % (', '.join(self.expectations() or ['nothing']), ans))
@@ -55,6 +56,7 @@ class ThouField:
 
   @classmethod
   def expected(self, fld):
+    if not self.expectations(): return True
     for exp in self.expectations():
       if exp.lower() == fld.lower():
         return True

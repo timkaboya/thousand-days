@@ -1,5 +1,7 @@
 # encoding: utf-8
+# vim: ai ts=2 sts=2 et sw=2
 
+from django.contrib import admin
 from django.db import models
 from abc import ABCMeta, abstractmethod
 

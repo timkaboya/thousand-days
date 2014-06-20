@@ -1,3 +1,4 @@
+# vim: ai ts=2 sts=2 et sw=2
 from django.contrib import messages as flashes
 from django.shortcuts import render, redirect
 from thoureport.messages.rapid1000messages import *
@@ -6,8 +7,22 @@ from thoureport.reports.reports import THE_DATABASE as db
 from thoureport.models import *
 
 REPORT_SET = {
+  'PRE':  PregReport,
+  'REF':  RefReport,
+  'ANC':  ANCReport,
+  'DEP':  DepReport,
+  'RISK': RiskReport,
   'RED':  RedReport,
-  'REV':  RevenceReport,
+  'BIR':  BirReport,
+  'CHI':  ChildReport,
+  'DTH':  DeathReport,
+  'RES':  ResultReport,
+  'RAR':  RedResultReport,
+  'NBC':  NBCReport,
+  'PNC':  PNCReport,
+
+  'TIM':  TimothyReport,
+  'REV': RevenceReport,
 }
 
 TRANSFORMATIONS = {
@@ -29,7 +44,7 @@ class TraversibleTX:
     return ans
 
 def and_join(dem):
-  if len(dem) < 2: dem[0]
+  if len(dem) < 2: return dem[0] if dem else ''
   return ', and '.join([', '.join(dem[0:-1]), dem[-1]])
 
 class TraversibleReport:
@@ -57,7 +72,7 @@ def error_messenger(dat, msgobj, fld):
   return reduce(applicant, TRANSFORMATIONS.keys(), fld)
 
 def smser(req):
-  msgs  = StoredSMS.objects.all()
+  msgs  = StoredSMS.objects.all().order_by('-when')[:20]
   return render(req, 'smser.html', {'msgs': msgs})
 
 def reports(req, rcode = None):
@@ -73,7 +88,7 @@ def reports(req, rcode = None):
   return render(req, 'reports.html', {'reps': reps, 'repset': REPORT_SET})
 
 def messages(req):
-  msgs  = StoredSMS.objects.all()
+  msgs  = StoredSMS.objects.all().order_by('-when')
   return render(req, 'messages.html', {'msgs': msgs})
 
 def resp_mod(req, cod):

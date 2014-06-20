@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# vim: ai ts=2 sts=2 et sw=2
 from django.conf.urls import patterns, include, url
 
+from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
