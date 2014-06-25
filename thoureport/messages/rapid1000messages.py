@@ -14,7 +14,7 @@ def first_cap(s):
 class IDField(ThouField):
   @classmethod
   def is_legal(self, ans):
-    return [] if len(ans) == 16 else 'pre_2'
+    return [] if len(ans) == 16 else 'id_length'
 
 class DateField(ThouField):
   @classmethod
@@ -23,6 +23,9 @@ class DateField(ThouField):
     if not ans: return 'pre_4'
     gps = ans.groups()
     return [] # Check that it is a valid date. To be Done.  Move to semantics part?
+
+class LMPDateField(DateField):
+  pass
 
 class NumberField(ThouField):
   @classmethod
@@ -40,15 +43,10 @@ class GravidityField(NumberField):
 class ParityField(NumberField):
   pass
 
-class PregCodeField(CodeField):
+class PrevPregCodeField(CodeField):
   @classmethod
   def expectations(self):
     return ['GS', 'MU', 'HD', 'RM', 'OL', 'YG', 'NR', 'TO', 'HW', 'NT', 'NT', 'NH', 'KX', 'YJ', 'LZ']
-
-class PrevPregField(PregCodeField):
-  @classmethod
-  def expectations(self):
-    return ['GS', 'MU', 'HD', 'RM']
 
 class SymptomCodeField(CodeField):
   @classmethod
@@ -60,6 +58,37 @@ class RedSymptomCodeField(SymptomCodeField):
   @classmethod
   def expectations(self):
     return ['AP', 'CO', 'HE', 'LA', 'MC', 'PA', 'PS', 'SC', 'SL', 'UN']
+
+class RiskSymptomCodeField(SymptomCodeField):
+  @classmethod
+  def expectations(self):
+    return ['VO', 'PC', 'OE', 'NS', 'MA', 'JA', 'FP', 'FE', 'DS', 'DI', 'SA', 'RB', 'HY', 'CH', 'AF']
+
+class ANCSymptomCodeField(SymptomCodeField):
+  @classmethod
+  def expectations(self):
+    return ['VO', 'PC', 'OE', 'NS', 'MA', 'JA', 'FP', 'FE', 'DS', 'DI', 'SA', 'RB','NP', 'HY', 'CH', 'AF']
+
+class ChiSymptomCodeField(SymptomCodeField):
+  @classmethod
+  def expectations(self):
+    return ['NP', 'IB', 'DB']
+
+class BirSymptomCodeField(SymptomCodeField):
+  @classmethod
+  def expectations(self):
+    return ['SB', 'RB', 'NP', 'AF', 'CI', 'CM', 'IB', 'DB', 'PM']
+
+class NBCSymptomCodeField(BirSymptomCodeField):
+  pass
+
+class CCMSymptomCodeField(SymptomCodeField):
+  @classmethod
+  def expectations(self):
+    return ['DI', 'MA', 'PC', 'OI', 'NP', 'IB', 'DB', 'NV']
+
+class CMRSymptomCodeField(CCMSymptomCodeField):
+  pass
 
 class LocationField(CodeField):
   @classmethod
@@ -74,12 +103,13 @@ class FloatedField(CodeField):
 class NumberedField(CodeField):
   @classmethod
   def is_legal(self, fld):
+    print fld
     return [] if re.match(r'\w+\d+', fld) else 'bad_numbered_field'
 
 class HeightField(FloatedField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'HT\d+(\.\d+)', fld) else 'bad_height_code'
+    return [] if re.match(r'HT|ht\d+(\.\d+)', fld) else 'bad_height_code'
 
 class WeightField(FloatedField):
   @classmethod
@@ -106,36 +136,79 @@ class ANCField(NumberedField):
   def is_legal(self, fld):
     return [] if re.match(r'\w+\d$', fld) else 'anc_code'
 
+  @classmethod
+  def expectations(self):
+    'Pre-enforcing the discipline that `is_legal` does not enforce.'
+    return ['ANC2', 'ANC3', 'ANC4', 'ANC5']
+
 class PNCField(NumberedField):
   @classmethod
   def is_legal(self, fld):
     return [] if re.match(r'\w+\d$', fld) else 'pnc_code'
 
+  @classmethod
+  def expectations(self):
+    'Pre-enforcing the discipline that `is_legal` does not enforce.'
+    return ['PNC1', 'PNC2', 'PNC3', 'PNC4', 'PNC5']
+
 class NBCField(NumberedField):
   @classmethod
   def is_legal(self, fld):
+    print fld
     return [] if re.match(r'\w+\d$', fld) else 'nbc_code'
 
   @classmethod
   def expectations(self):
-    return ['EBF', 'NB', 'PH', 'NBC1', 'NBC2', 'NBC3', 'NBC4', 'NBC5']
+    'Pre-enforcing the discipline that `is_legal` does not enforce.'
+    return ['NBC1', 'NBC2', 'NBC3', 'NBC4', 'NBC5']
 
 class GenderField(CodeField):
   @classmethod
   def expectations(self):
     return ['BO', 'GI']
 
-class BreastFeedField(NBCField):
+class BreastFeedField(CodeField):
+  @classmethod
+  def expectations(self):
+    return ['BF1', 'NB']
+
+class NBCBreastFeedField(BreastFeedField):
   @classmethod
   def expectations(self):
     return ['EBF', 'NB']
+
+class CBNBreastFeedField(BreastFeedField):
+  @classmethod
+  def expectations(self):
+    return ['EBF','CBF', 'NB']
 
 class InterventionField(CodeField):
   @classmethod
   def expectations(self):
     return ['PR', 'AA', 'AL', 'AT', 'NA']
 
-class NBCInterventionField(InterventionField):
+class RiskInterventionField(InterventionField):
+  @classmethod
+  def expectations(self):
+    return ['PR', 'AA']
+
+class RedInterventionField(InterventionField):
+  @classmethod
+  def expectations(self):
+    return ['AL', 'AT', 'NA']
+
+class NBCInterventionField(RiskInterventionField):
+  pass
+
+class PNCInterventionField(RiskInterventionField):
+  pass
+
+class CCMInterventionField(InterventionField):
+  @classmethod
+  def expectations(self):
+    return ['PT', 'PR', 'TR', 'AA']
+
+class CMRInterventionField(CCMInterventionField):
   pass
 
 class HealthStatusField(CodeField):
@@ -153,12 +226,15 @@ class MotherHealthStatusField(HealthStatusField):
   def expectations(self):
     return ['MW', 'MS']
 
+class ChildStatusField(NewbornHealthStatusField):
+  pass
+
 class VaccinationField(NumberedField):
   @classmethod
   def expectations(self):
     return ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'VC', 'VI', 'NV']
 
-class VaccinationCompletionField(VaccinationField):
+class VaccinationCompletionField(CodeField):
   @classmethod
   def expectations(self):
     return ['VC', 'VI', 'NV']
@@ -166,7 +242,7 @@ class VaccinationCompletionField(VaccinationField):
 class MUACField(FloatedField):
   @classmethod
   def is_legal(self, fld):
-    return [] if re.match(r'MUAC\d+(\.\d+)$', fld) else 'bad_muac_code'
+    return [] if re.match(r'MUAC|muac\d+(\.\d+)$', fld) else 'bad_muac_code'
 
 class DeathField(CodeField):
   @classmethod
@@ -277,7 +353,6 @@ class ThouMessage:
           errors.extend([(e, fld) for e in err])
         fobs.append(cur)
       except Exception, err:
-        print fld
         errors.append((str(err), fld))
     if etc.strip():
       errors.append('Superfluous text: "%s"' % (etc.strip(),))
@@ -311,17 +386,17 @@ class UnknownMessage(ThouMessage):
   pass
 
 class PregMessage(ThouMessage):
-  fields  = [IDField, DateField, DateField, GravidityField, ParityField,
-              (PregCodeField, True),
+  fields  = [IDField, DateField, LMPDateField, GravidityField, ParityField,
+              (PrevPregCodeField, True),
               (SymptomCodeField, True),
-             LocationField, WeightField, ToiletField, HandwashField]
+             LocationField, WeightField, HeightField, ToiletField, HandwashField]
 
 class RefMessage(ThouMessage):
   fields  = [PhoneBasedIDField]
 
 class ANCMessage(ThouMessage):
   fields  = [IDField, DateField, ANCField,
-             (SymptomCodeField, True),
+             (ANCSymptomCodeField, True),
              LocationField, WeightField]
 
 class DepMessage(ThouMessage):
@@ -329,7 +404,7 @@ class DepMessage(ThouMessage):
 
 class RiskMessage(ThouMessage):
   fields  = [IDField,
-             (SymptomCodeField, True),
+             (RiskSymptomCodeField, True),
              LocationField, WeightField]
 
 class RedMessage(ThouMessage):
@@ -337,12 +412,12 @@ class RedMessage(ThouMessage):
 
 class BirMessage(ThouMessage):
   fields  = [IDField, NumberField, DateField, GenderField,
-             (SymptomCodeField, True),
+             (BirSymptomCodeField, True),
              LocationField, BreastFeedField, WeightField]
 
-class ChildMessage(ThouMessage):
+class ChildHealthMessage(ThouMessage):
   fields  = [IDField, NumberField, DateField, VaccinationField, VaccinationCompletionField,
-             (SymptomCodeField, True),
+             (ChiSymptomCodeField, True),
              LocationField, WeightField, MUACField]
 
 class DeathMessage(ThouMessage):
@@ -350,40 +425,55 @@ class DeathMessage(ThouMessage):
 
 class ResultMessage(ThouMessage):
   fields  = [IDField,
-             (SymptomCodeField, True),
-             LocationField, InterventionField, MotherHealthStatusField]
+             (RiskSymptomCodeField, True),
+             LocationField, RiskInterventionField, MotherHealthStatusField]
 
 class RedResultMessage(ThouMessage):
   fields  = [IDField, DateField,
-             (SymptomCodeField, True),
-             LocationField, InterventionField, MotherHealthStatusField]
+             (RedSymptomCodeField, True),
+             LocationField, RedInterventionField, MotherHealthStatusField]
 
 class NBCMessage(ThouMessage):
   fields  = [IDField, NumberField, NBCField, DateField,
-             (SymptomCodeField, True),
-             BreastFeedField, NBCInterventionField, NewbornHealthStatusField]
+             (NBCSymptomCodeField, True),
+             NBCBreastFeedField, NBCInterventionField, NewbornHealthStatusField]
+
+class CBNMessage(ThouMessage):
+  fields  = [IDField, NumberField, DateField,
+             CBNBreastFeedField, HeightField, WeightField, MUACField]
+
+class CCMMessage(ThouMessage):
+  fields  = [IDField, NumberField, DateField,
+             (CCMSymptomCodeField, True),
+             CCMInterventionField, MUACField]
+
+class CMRMessage(ThouMessage):
+  fields  = [IDField, NumberField, DateField,
+             (CMRSymptomCodeField, True),
+             CMRInterventionField, ChildStatusField]
 
 class PNCMessage(ThouMessage):
   fields  = [IDField, PNCField, DateField,
              (SymptomCodeField, True),
-             InterventionField, MotherHealthStatusField]
+             PNCInterventionField, MotherHealthStatusField]
 
 # Testing field. Takes any of my names.
 class TimField(ThouField):
-    @classmethod 
-    def expectations(self):
-        return ['Timothy', 'Kaboya', 'Kalimba']
+  @classmethod 
+  def expectations(self):
+    return ['Timothy', 'Kaboya', 'Kalimba']
 
 class RevField(ThouField):
-    @classmethod
-    def expectations(self):
-        return ['Revence', 'Kato', 'Kalibwani']
+  @classmethod
+  def expectations(self):
+    return ['Revence', 'Kato', 'Kalibwani']
 
 # Testing message.
 class TIMMessage(ThouMessage):
-    fields  = [(TimField, True)]
+  fields  = [(TimField, True)]
+
 class REVMessage(ThouMessage):
-    fields = [(RevField, True)]
+  fields = [(RevField, True)]
 
 MSG_ASSOC = {
   'PRE':  PregMessage,
@@ -393,11 +483,14 @@ MSG_ASSOC = {
   'RISK': RiskMessage,
   'RED':  RedMessage,
   'BIR':  BirMessage,
-  'CHI':  ChildMessage,
+  'CHI':  ChildHealthMessage,
   'DTH':  DeathMessage,
   'RES':  ResultMessage,
   'RAR':  RedResultMessage,
   'NBC':  NBCMessage,
+  'CBN':  CBNMessage,
+  'CCM':  CCMMessage,
+  'CMR':  CMRMessage,
   'PNC':  PNCMessage,
 
   'REV': REVMessage,

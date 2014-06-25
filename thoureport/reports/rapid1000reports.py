@@ -37,6 +37,15 @@ class RedResultReport(ThouReport):
 class NBCReport(ThouReport):
   pass
 
+class CBNReport(ThouReport):
+  pass
+
+class CCMReport(ThouReport):
+  pass
+
+class CMRReport(ThouReport):
+  pass
+
 class PNCReport(ThouReport):
   pass
 

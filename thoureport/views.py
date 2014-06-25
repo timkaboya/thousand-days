@@ -19,6 +19,9 @@ REPORT_SET = {
   'RES':  ResultReport,
   'RAR':  RedResultReport,
   'NBC':  NBCReport,
+  'CCM':  CCMReport,
+  'CMR':  CMRReport,
+  'CBN':  CBNReport,
   'PNC':  PNCReport,
 
   'TIM':  TimothyReport,
