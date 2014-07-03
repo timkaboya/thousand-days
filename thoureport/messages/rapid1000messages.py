@@ -380,6 +380,42 @@ class ThouMessage:
 
   @abstractmethod
   def semantics_check(self):
+    ####
+    #### Pregnancy Semantic and DB Checks
+    # Patient ID checks (IDField)
+    # If National_id: refuse if id already used, 
+    # If phonenumber+date, verify chw phone number, compare date with range (curr_date-5)
+    ## Last Menstrual Period
+    # Should be less than curr_date and not earlier than Curr_date-9months
+    ## Second ANC Date
+    # Greater than curr_date but not later than calculated exp_delivery_date
+    ## Gravidity
+    # Should Be btn 01 and 30, (should we store it as num)
+    # Should not be less than registered Pregnancies for given ID
+    ## Parity
+    # Should be less than Gravidity. 
+    ## Previous Symptoms
+    # If Gravidity is 1, Previous should be "NR"
+    # RM only reported if (gravidity-parity >= 2)
+    # Check for code duplication
+    # if NR is reported, no other code should be reported. 
+    ## Current Symptoms
+    # if NP reported, no other code should be reported
+    ## Location (No semantic Check)
+    ## Mother Weight
+    # Should be btn 35 and 150
+    ## Mother height: 
+    # Should be btn 50 n 250 
+    ## Toilet (No Semantic Check)
+    ## HandWashing (No Semantic Check)
+    
+    ### Other Constraints
+    # Refuse PRE Report 
+    #if  BIR is reported recently, miscarriage, death reported,
+    # (previous LMP - new LMP > 10 months)
+    #   
+
+
     return ['No Kalibwani, Stop it.! I told you ThouMessage#semantics_check is abstract.']  # Hey, why doesn’t 'abstract' scream out? TODO.
 
 class UnknownMessage(ThouMessage):
