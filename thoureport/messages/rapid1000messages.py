@@ -103,7 +103,6 @@ class FloatedField(CodeField):
 class NumberedField(CodeField):
   @classmethod
   def is_legal(self, fld):
-    print fld
     return [] if re.match(r'\w+\d+', fld) else 'bad_numbered_field'
 
 class HeightField(FloatedField):
@@ -154,7 +153,6 @@ class PNCField(NumberedField):
 class NBCField(NumberedField):
   @classmethod
   def is_legal(self, fld):
-    print fld
     return [] if re.match(r'\w+\d$', fld) else 'nbc_code'
 
   @classmethod
@@ -329,6 +327,7 @@ class ThouMessage:
 
   @staticmethod
   def parse(msg):
+    """ Called only once """ 
     code, rem = ThouMessage.pull_code(msg.strip())
     klass     = UnknownMessage
     try:
@@ -367,7 +366,8 @@ class ThouMessage:
     self.entries  = reduce(as_hash, fobs, {})
 
   def __enter__(self):
-    self.errors = self.errors.extend(self.semantics_check())
+    self.errors = self.errors.append(self.semantics_check())
+    print "Hello", self.semantics_check()
     if self.errors:
       raise ThouMsgError(self.errors)
     return self
@@ -378,7 +378,7 @@ class ThouMessage:
     else:
       pass  # TODO: Record the success.
 
-  @abstractmethod
+  #@abstractmethod
   def semantics_check(self):
     ####
     #### Pregnancy Semantic and DB Checks
@@ -416,7 +416,7 @@ class ThouMessage:
     #   
 
 
-    return ['No Kalibwani, Stop it.! I told you ThouMessage#semantics_check is abstract.']  # Hey, why doesn’t 'abstract' scream out? TODO.
+    return ['Semantics Check Error!']  # Hey, why doesn’t 'abstract' scream out? TODO.
 
 class UnknownMessage(ThouMessage):
   pass
