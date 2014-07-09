@@ -20,7 +20,7 @@ class DateField(ThouField):
   @classmethod
   def is_legal(self, fld):
     ans = re.match(r'(\d{2})\.(\d{2})\.(\d{4})', fld)
-    if not ans: return 'pre_4'
+    if not ans: return 'date_format_error'
     gps = ans.groups()
     return [] # Check that it is a valid date. To be Done.  Move to semantics part?
 
@@ -367,7 +367,6 @@ class ThouMessage:
 
   def __enter__(self):
     self.errors = self.errors.append(self.semantics_check())
-    print "Hello", self.semantics_check()
     if self.errors:
       raise ThouMsgError(self.errors)
     return self
@@ -380,42 +379,6 @@ class ThouMessage:
 
   #@abstractmethod
   def semantics_check(self):
-    ####
-    #### Pregnancy Semantic and DB Checks
-    # Patient ID checks (IDField)
-    # If National_id: refuse if id already used, 
-    # If phonenumber+date, verify chw phone number, compare date with range (curr_date-5)
-    ## Last Menstrual Period
-    # Should be less than curr_date and not earlier than Curr_date-9months
-    ## Second ANC Date
-    # Greater than curr_date but not later than calculated exp_delivery_date
-    ## Gravidity
-    # Should Be btn 01 and 30, (should we store it as num)
-    # Should not be less than registered Pregnancies for given ID
-    ## Parity
-    # Should be less than Gravidity. 
-    ## Previous Symptoms
-    # If Gravidity is 1, Previous should be "NR"
-    # RM only reported if (gravidity-parity >= 2)
-    # Check for code duplication
-    # if NR is reported, no other code should be reported. 
-    ## Current Symptoms
-    # if NP reported, no other code should be reported
-    ## Location (No semantic Check)
-    ## Mother Weight
-    # Should be btn 35 and 150
-    ## Mother height: 
-    # Should be btn 50 n 250 
-    ## Toilet (No Semantic Check)
-    ## HandWashing (No Semantic Check)
-    
-    ### Other Constraints
-    # Refuse PRE Report 
-    #if  BIR is reported recently, miscarriage, death reported,
-    # (previous LMP - new LMP > 10 months)
-    #   
-
-
     return ['Semantics Check Error!']  # Hey, why doesn’t 'abstract' scream out? TODO.
 
 class UnknownMessage(ThouMessage):

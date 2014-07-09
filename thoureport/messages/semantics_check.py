@@ -8,8 +8,8 @@
 #from thoureport.reports.reports import THE_DATABASE as db
 
 
-def semantics_check(self):
-  ####
+def semantics_check(msg):
+  return str(msg)
   #### Pregnancy Semantic and DB Checks
   # Patient ID checks (IDField)
   # If National_id: refuse if id is duplicate (Already Used), 
@@ -19,7 +19,7 @@ def semantics_check(self):
   ## Second ANC Date
   # Greater than curr_date but not later than calculated exp_delivery_date
   ## Gravidity
-  # Should Be btn 01 and 30, (should we store it as num)
+  # Should be btn 01 and 30, (should we store it as num)
   # Should not be less than registered Pregnancies for given ID
   ## Parity
   # Should be less than Gravidity. 
@@ -42,9 +42,8 @@ def semantics_check(self):
   # (previous LMP - new LMP > 10 months)
   #   
   
-  return ['No Kalibwani, Stop it.! I told you ThouMessage#semantics_check is abstract.']  # Hey, why doesn’t 'abstract' scream out? TOdo.
 
-def ANC_Check(self):
+#def ANC_Check(self):
   ### Pre must already be recorded 
   ## NumberField: Same checks as PRE
   ## ANC Visit Date
@@ -57,14 +56,14 @@ def ANC_Check(self):
   ## Location
   ## Mother Weight: btn 35 and 150
 
-def RISK_Check(self):
+#def RISK_Check(self):
   ### PRE must be already recorded
   ## NumberField: Same checks
   ## Curr Symptoms: Can't report "NP"
   ## Location: 
   ## Weight: Weight btn 25 and 150. 
 
-def RES_Check(self):
+#def RES_Check(self):
   ### PRE must be already recorded
   ## NumberField: Same checks
   ## Reported Symptoms: Should be same as RISK
@@ -72,17 +71,17 @@ def RES_Check(self):
   ## Intervention Code:
   ## Mother Status: 
 
-def RED_Check(self):
+#def RED_Check(self):
   ## None... 
 
-def RAR_Check(self):
+#def RAR_Check(self):
   ## NumberField, same check
   ## Emergency Date: <= Curr_date, Match with Red Alert??
   ## Reported Symptoms: Compare with RED, How?
   ## Location: 
   ## Intervention Code: Mother Status
 
-def BIR_Check(self):
+#def BIR_Check(self):
   ## Can be duplicated with Diff Child Number
   ## NumberField, check
   ## Child Number: Btn 01 and 08. No duplicate child number
@@ -91,7 +90,7 @@ def BIR_Check(self):
   ## Gender, Curr Symptoms (If NP reported, no other code), Location, BF, 
   ## Child Weight (Btn 1 and 10)
 
-def NBC_Check(self):
+#def NBC_Check(self):
   ## Only when BIR is reported
   # No duplicate NBC visit for same child number
   ## NumberField, check
@@ -102,7 +101,8 @@ def NBC_Check(self):
   ## Breastfeeding: InterventionCode, Child_Status, 
 
 def main():
-  print "Hello World"
+  while True:
+    print semantics_check(str(raw_input('Enter PRE report: ')))
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   main()
