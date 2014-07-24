@@ -1,4 +1,6 @@
 *.pyc
+*.swo
+*.swn
 .*.swp
 thoureport/messages/semantic_checks.py
 thousand/settings.py

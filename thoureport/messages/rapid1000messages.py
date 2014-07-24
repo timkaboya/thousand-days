@@ -97,6 +97,9 @@ class BirSymptomCodeField(SymptomCodeField):
   def expectations(self):
     return ['SB', 'RB', 'NP', 'AF', 'CI', 'CM', 'IB', 'DB', 'PM']
 
+class PNCSymptomCodeField(ANCSymptomCodeField):
+  pass
+
 class NBCSymptomCodeField(BirSymptomCodeField):
   pass
 
@@ -537,7 +540,7 @@ class CMRMessage(ThouMessage):
 
 class PNCMessage(ThouMessage):
   fields  = [IDField, PNCField, DateField,
-             (SymptomCodeField, True),
+             (PNCSymptomCodeField, True),
              PNCInterventionField, MotherHealthStatusField]
 
 # Testing field. Takes any of my names.
